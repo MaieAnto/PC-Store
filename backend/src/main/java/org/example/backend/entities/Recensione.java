@@ -17,8 +17,8 @@ import java.util.Date;
 @Table(
     name = "RECENSIONE",
     uniqueConstraints = @UniqueConstraint(
-        name = "uk_recensione_autore_prodotto",
-        columnNames = {"autore", "prodotto"}
+        name = "recensione_cliente_prodotto",
+        columnNames = {"cliente", "prodotto"}
     )
 )
 public class Recensione {
@@ -28,7 +28,7 @@ public class Recensione {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "autore")
+    @JoinColumn(name = "cliente")
     private Utente autore;
 
     @ManyToOne

@@ -1,6 +1,6 @@
 # Progetto
 
-l’idea di progetto è un e-commerce per la vendita di componenti per computer fissi. Il sito permetterà agli utenti di navigare tra diverse categorie di componenti hardware, aggiungere prodotti al carrello e procedere all'acquisto, nonché lasciare recensioni e valutazioni sui prodotti acquistati.
+Il progetto consiste in un e-commerce per la vendita di componenti per computer fissi. Il sito permetterà agli utenti di navigare tra diverse categorie di componenti hardware, aggiungere prodotti al carrello e procedere all'acquisto, nonché lasciare recensioni e valutazioni sui prodotti acquistati.
 
 Le funzionalità principali saranno:
 

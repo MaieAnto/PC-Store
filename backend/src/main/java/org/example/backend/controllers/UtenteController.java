@@ -1,12 +1,11 @@
 package org.example.backend.controllers;
 
+import org.example.backend.dto.CredenzialiLogin;
+import org.example.backend.dto.RispostaLogin;
 import org.example.backend.entities.Ruolo;
 import org.example.backend.entities.Utente;
-import org.example.backend.eccezioni.CredenzialiNonValideException;
-import org.example.backend.eccezioni.EmailGiaRegistrataException;
-import org.example.backend.eccezioni.UtenteNonTrovatoException;
+import org.example.backend.security.JwtUtil;
 import org.example.backend.services.UtenteService;
-import org.example.backend.support.ResponseMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,60 +17,48 @@ import java.util.List;
 public class UtenteController {
 
     private final UtenteService utenteService;
+    private final JwtUtil jwtUtil;
 
-    public UtenteController(UtenteService utenteService) {
+    public UtenteController(UtenteService utenteService, JwtUtil jwtUtil) {
         this.utenteService = utenteService;
+        this.jwtUtil = jwtUtil;
     }
 
-    /* Registrazione di un nuovo utente (201 se creato, 409 se l'email esiste gia'). */
+    // Registrazione
     @PostMapping("/registrazione")
-    public ResponseEntity<?> registra(@RequestBody Utente utente) {
-        try {
-            return new ResponseEntity<>(utenteService.registra(utente), HttpStatus.CREATED);
-        } catch (EmailGiaRegistrataException e) {
-            return new ResponseEntity<>(new ResponseMessage(e.getMessage()), HttpStatus.CONFLICT);
-        }
+    public ResponseEntity<Utente> registra(@RequestBody Utente utente) {
+        return new ResponseEntity<>(utenteService.registra(utente), HttpStatus.CREATED);
     }
 
-    /* Autenticazione: verifica email e password e restituisce l'utente (401 se errate). */
+    // Login : verifica le credenziali e rilascia un token JWT con email e ruolo insieme ai dati dell'utente
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String email, @RequestParam String password) {
-        try {
-            return new ResponseEntity<>(utenteService.login(email, password), HttpStatus.OK);
-        } catch (CredenzialiNonValideException e) {
-            return new ResponseEntity<>(new ResponseMessage(e.getMessage()), HttpStatus.UNAUTHORIZED);
-        }
+    public RispostaLogin login(@RequestBody CredenzialiLogin credenziali) {
+        Utente utente = utenteService.login(credenziali.getEmail(), credenziali.getPassword());
+        String token = jwtUtil.generateToken(utente.getEmail(), utente.getRuolo());
+        return new RispostaLogin(token, utente);
     }
 
-    /* Dettaglio di un utente per id. */
+    // Dettaglio di un utente per id
     @GetMapping("/{id}")
-    public ResponseEntity<?> trovaPerId(@PathVariable int id) {
-        try {
-            return new ResponseEntity<>(utenteService.trovaPerId(id), HttpStatus.OK);
-        } catch (UtenteNonTrovatoException e) {
-            return new ResponseEntity<>(new ResponseMessage(e.getMessage()), HttpStatus.NOT_FOUND);
-        }
+    public Utente trovaPerId(@PathVariable int id) {
+        return utenteService.trovaPerId(id);
     }
 
-    /* Ricerca di un utente per email. */
+    // Ricerca di un utente per email
     @GetMapping("/per-email")
-    public ResponseEntity<?> trovaPerEmail(@RequestParam String email) {
-        try {
-            return new ResponseEntity<>(utenteService.trovaPerEmail(email), HttpStatus.OK);
-        } catch (UtenteNonTrovatoException e) {
-            return new ResponseEntity<>(new ResponseMessage(e.getMessage()), HttpStatus.NOT_FOUND);
-        }
+    public Utente trovaPerEmail(@RequestParam String email) {
+        return utenteService.trovaPerEmail(email);
     }
 
-    /* Elenco degli utenti per ruolo. */
+    // Elenco degli utenti per ruolo
     @GetMapping("/ruolo/{ruolo}")
-    public ResponseEntity<List<Utente>> trovaPerRuolo(@PathVariable Ruolo ruolo) {
-        return new ResponseEntity<>(utenteService.trovaPerRuolo(ruolo), HttpStatus.OK);
+    public List<Utente> trovaPerRuolo(@PathVariable Ruolo ruolo) {
+        return utenteService.trovaPerRuolo(ruolo);
     }
 
-    /* Elenco completo degli utenti. */
+    // Elenco completo degli utenti
     @GetMapping
-    public ResponseEntity<List<Utente>> elencaTutti() {
-        return new ResponseEntity<>(utenteService.elencaTutti(), HttpStatus.OK);
+    public List<Utente> elencaTutti() {
+        return utenteService.elencaTutti();
     }
 }

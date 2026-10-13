@@ -1,13 +1,8 @@
 package org.example.backend.controllers;
 
+import org.example.backend.dto.RecensioneRequest;
 import org.example.backend.entities.Recensione;
-import org.example.backend.eccezioni.OperazioneNonConsentitaException;
-import org.example.backend.eccezioni.ProdottoNonTrovatoException;
-import org.example.backend.eccezioni.RecensioneGiaEsistenteException;
-import org.example.backend.eccezioni.RecensioneNonConsentitaException;
-import org.example.backend.eccezioni.UtenteNonTrovatoException;
 import org.example.backend.services.RecensioneService;
-import org.example.backend.support.ResponseMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,46 +19,31 @@ public class RecensioneController {
         this.recensioneService = recensioneService;
     }
 
-    /* Aggiunge una recensione (consentita solo se l'utente ha acquistato il prodotto,
-       una sola per coppia utente-prodotto, valutazione da 1 a 5). */
+    // Aggiunge una recensione
+    // Consentito solo se l'utente ha acquistato il prodotto, una sola per coppia utente-prodotto
+    // Dati nel corpo JSON: { idAutore, idProdotto, valutazione, commento }
     @PostMapping
-    public ResponseEntity<?> aggiungiRecensione(@RequestParam int idAutore,
-                                                @RequestParam int idProdotto,
-                                                @RequestParam int valutazione,
-                                                @RequestParam(required = false) String commento) {
-        try {
-            Recensione recensione = recensioneService.aggiungiRecensione(idAutore, idProdotto, valutazione, commento);
-            return new ResponseEntity<>(recensione, HttpStatus.CREATED);
-        } catch (UtenteNonTrovatoException | ProdottoNonTrovatoException e) {
-            return new ResponseEntity<>(new ResponseMessage(e.getMessage()), HttpStatus.NOT_FOUND);
-        } catch (RecensioneNonConsentitaException e) {
-            return new ResponseEntity<>(new ResponseMessage(e.getMessage()), HttpStatus.FORBIDDEN);
-        } catch (RecensioneGiaEsistenteException e) {
-            return new ResponseEntity<>(new ResponseMessage(e.getMessage()), HttpStatus.CONFLICT);
-        } catch (OperazioneNonConsentitaException e) {
-            return new ResponseEntity<>(new ResponseMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<Recensione> aggiungiRecensione(@RequestBody RecensioneRequest richiesta) {
+        Recensione recensione = recensioneService.aggiungiRecensione(
+                richiesta.getIdAutore(), richiesta.getIdProdotto(), richiesta.getValutazione(), richiesta.getCommento());
+        return new ResponseEntity<>(recensione, HttpStatus.CREATED);
     }
 
-    /* Recensioni di un prodotto, dalla piu' recente alla piu' vecchia. */
+    // Recensioni di un prodotto, dalla piu' recente alla piu' vecchia
     @GetMapping("/prodotto/{idProdotto}")
-    public ResponseEntity<List<Recensione>> recensioniProdotto(@PathVariable int idProdotto) {
-        return new ResponseEntity<>(recensioneService.recensioniProdotto(idProdotto), HttpStatus.OK);
+    public List<Recensione> recensioniProdotto(@PathVariable int idProdotto) {
+        return recensioneService.recensioniProdotto(idProdotto);
     }
 
-    /* Media delle valutazioni di un prodotto (0 se non ha recensioni). */
+    // Media delle valutazioni di un prodotto
     @GetMapping("/prodotto/{idProdotto}/media")
-    public ResponseEntity<Double> mediaValutazioni(@PathVariable int idProdotto) {
-        return new ResponseEntity<>(recensioneService.mediaValutazioni(idProdotto), HttpStatus.OK);
+    public double mediaValutazioni(@PathVariable int idProdotto) {
+        return recensioneService.mediaValutazioni(idProdotto);
     }
 
-    /* Recensioni scritte da un utente. */
+    // Recensioni scritte da un utente
     @GetMapping("/utente/{idAutore}")
-    public ResponseEntity<?> recensioniUtente(@PathVariable int idAutore) {
-        try {
-            return new ResponseEntity<>(recensioneService.recensioniUtente(idAutore), HttpStatus.OK);
-        } catch (UtenteNonTrovatoException e) {
-            return new ResponseEntity<>(new ResponseMessage(e.getMessage()), HttpStatus.NOT_FOUND);
-        }
+    public List<Recensione> recensioniUtente(@PathVariable int idAutore) {
+        return recensioneService.recensioniUtente(idAutore);
     }
 }

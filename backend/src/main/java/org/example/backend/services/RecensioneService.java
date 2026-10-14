@@ -45,12 +45,10 @@ public class RecensioneService {
         Prodotto prodotto = prodottoRepository.findById(idProdotto)
                 .orElseThrow(() -> new ProdottoNonTrovatoException("Prodotto con id " + idProdotto + " non trovato"));
 
-        //la recensione e' ammessa solo se il cliente ha acquistato il prodotto.
         if (!dettagliOrdineRepository.existsByOrdine_Acquirente_IdAndProdotto_Id(idAutore, idProdotto)) {
             throw new RecensioneNonConsentitaException();
         }
 
-        // è ammessa una sola recensione per cliente-prodotto
         if (recensioneRepository.existsByAutoreAndProdotto(autore, prodotto)) {
             throw new RecensioneGiaEsistenteException();
         }
@@ -75,7 +73,7 @@ public class RecensioneService {
         return recensioneRepository.findByAutore(autore);
     }
 
-    /* Media delle valutazioni di un prodotto (0 se non ci sono recensioni)*/
+    /* Media delle valutazioni di un prodotto */
     public double mediaValutazioni(int idProdotto) {
         List<Recensione> recensioni = recensioneRepository.findByProdotto_IdOrderByDataRecensioneDesc(idProdotto);
         if (recensioni.isEmpty()) {

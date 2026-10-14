@@ -42,7 +42,6 @@ public class OrdineService {
         Utente utente = utenteRepository.findById(idUtente)
                 .orElseThrow(() -> new UtenteNonTrovatoException("Utente con id " + idUtente + " non trovato"));
 
-        // Solo un cliente puo' effettuare ordini
         if (utente.getRuolo() != Ruolo.CLIENTE) {
             throw new OperazioneNonConsentitaException("Solo un cliente puo' effettuare ordini");
         }
@@ -59,8 +58,6 @@ public class OrdineService {
         for (DettagliCarrello riga : carrello.getDettagli()) {
             Prodotto prodotto = riga.getProdotto();
             int richiesta = riga.getQuantita();
-
-            // Controllo scorta.
             if (prodotto.getQuantita() < richiesta) {
                 throw new QuantitaNonDisponibileException(
                         "Scorta insufficiente per il prodotto: " + prodotto.getNome());
@@ -72,15 +69,11 @@ public class OrdineService {
             rigaOrdine.setQuantita(richiesta);
             rigaOrdine.setPrezzoUnitario(prodotto.getPrezzo());
             righeOrdine.add(rigaOrdine);
-
-            // Scala la scorta
             prodotto.setQuantita(prodotto.getQuantita() - richiesta);
         }
 
         ordine.setDettagli(righeOrdine);
         Ordine ordineSalvato = ordineRepository.save(ordine);
-
-        // Svuota il carrello dopo aver creato l'ordine.
         carrello.getDettagli().clear();
         carrelloRepository.save(carrello);
 

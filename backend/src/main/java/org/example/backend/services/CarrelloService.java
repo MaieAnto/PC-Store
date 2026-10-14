@@ -3,12 +3,14 @@ package org.example.backend.services;
 import org.example.backend.entities.Carrello;
 import org.example.backend.entities.DettagliCarrello;
 import org.example.backend.entities.Prodotto;
+import org.example.backend.entities.Ruolo;
 import org.example.backend.entities.Utente;
 import org.example.backend.repositories.CarrelloRepository;
 import org.example.backend.repositories.ProdottoRepository;
 import org.example.backend.repositories.UtenteRepository;
 import org.example.backend.eccezioni.OperazioneNonConsentitaException;
 import org.example.backend.eccezioni.ProdottoNonTrovatoException;
+import org.example.backend.eccezioni.QuantitaNonDisponibileException;
 import org.example.backend.eccezioni.UtenteNonTrovatoException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,10 @@ public class CarrelloService {
         return carrelloRepository.findByUtente_Id(idUtente).orElseGet(() -> {
             Utente utente = utenteRepository.findById(idUtente)
                     .orElseThrow(() -> new UtenteNonTrovatoException("Utente con id " + idUtente + " non trovato"));
+            // Il carrello esiste solo per i clienti: un fornitore non acquista.
+            if (utente.getRuolo() != Ruolo.CLIENTE) {
+                throw new OperazioneNonConsentitaException("Solo un cliente puo' usare il carrello");
+            }
             Carrello carrello = new Carrello();
             carrello.setUtente(utente);
             carrello.setDettagli(new ArrayList<>());
@@ -54,7 +60,15 @@ public class CarrelloService {
         Prodotto prodotto = prodottoRepository.findById(idProdotto)
                 .orElseThrow(() -> new ProdottoNonTrovatoException("Prodotto con id " + idProdotto + " non trovato"));
 
+        if (!prodotto.isDisponibile()) {
+            throw new OperazioneNonConsentitaException("Il prodotto " + prodotto.getNome() + " non e' piu' in vendita");
+        }
+
         DettagliCarrello esistente = trovaRiga(carrello, idProdotto);
+
+        int giaNelCarrello = (esistente != null) ? esistente.getQuantita() : 0;
+        controllaGiacenza(prodotto, giaNelCarrello + quantita);
+
         if (esistente != null) {
             esistente.setQuantita(esistente.getQuantita() + quantita);
         } else {
@@ -78,6 +92,7 @@ public class CarrelloService {
         if (riga == null) {
             throw new ProdottoNonTrovatoException("Il prodotto con id " + idProdotto + " non e' presente nel carrello");
         }
+        controllaGiacenza(riga.getProdotto(), nuovaQuantita);
         riga.setQuantita(nuovaQuantita);
         return carrelloRepository.save(carrello);
     }
@@ -102,15 +117,22 @@ public class CarrelloService {
         return carrelloRepository.save(carrello);
     }
 
-    /* Restituisce le righe del carrello dell'utente; lista vuota se il carrello
-       non esiste ancora (metodo in sola lettura: non crea il carrello). */
+    /* Restituisce le righe del carrello dell'utente; lista vuota se il carrello non esiste ancora*/
     public List<DettagliCarrello> getDettagli(int idUtente) {
         return carrelloRepository.findByUtente_Id(idUtente)
                 .map(carrello -> new ArrayList<>(carrello.getDettagli()))
                 .orElseGet(ArrayList::new);
     }
 
-    /* Cerca la riga del carrello relativa a un prodotto; null se assente. */
+    /* Lancia eccezione se la quantita' richiesta supera le scorte del prodotto. */
+    private void controllaGiacenza(Prodotto prodotto, int quantitaRichiesta) {
+        if (quantitaRichiesta > prodotto.getQuantita()) {
+            throw new QuantitaNonDisponibileException("Disponibili solo " + prodotto.getQuantita()
+                    + " pezzi di " + prodotto.getNome());
+        }
+    }
+
+    /* Cerca la riga del carrello relativa a un prodotto */
     private DettagliCarrello trovaRiga(Carrello carrello, int idProdotto) {
         for (DettagliCarrello riga : carrello.getDettagli()) {
             if (riga.getProdotto().getId() == idProdotto) {

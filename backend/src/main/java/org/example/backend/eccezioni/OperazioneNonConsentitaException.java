@@ -1,8 +1,6 @@
 package org.example.backend.eccezioni;
 
-/* Lanciata quando un'operazione non e' consentita: ruolo errato o parametri non validi
-   (es. un FORNITORE che prova ad acquistare, un CLIENTE che prova a rifornire,
-   una quantita' minore o uguale a zero). */
+/* Lanciata quando un'operazione non e' consentita: ruolo errato o parametri non validi */
 public class OperazioneNonConsentitaException extends RuntimeException {
 
     public OperazioneNonConsentitaException() {

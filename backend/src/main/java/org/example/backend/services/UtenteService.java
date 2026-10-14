@@ -6,6 +6,7 @@ import org.example.backend.repositories.UtenteRepository;
 import org.example.backend.eccezioni.CredenzialiNonValideException;
 import org.example.backend.eccezioni.EmailGiaRegistrataException;
 import org.example.backend.eccezioni.UtenteNonTrovatoException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +17,11 @@ import java.util.List;
 public class UtenteService {
 
     private final UtenteRepository utenteRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UtenteService(UtenteRepository utenteRepository) {
+    public UtenteService(UtenteRepository utenteRepository, PasswordEncoder passwordEncoder) {
         this.utenteRepository = utenteRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -26,14 +29,15 @@ public class UtenteService {
         if (utenteRepository.existsByEmail(utente.getEmail())) {
             throw new EmailGiaRegistrataException();
         }
+        utente.setId(0);
+        utente.setPassword(passwordEncoder.encode(utente.getPassword()));
         return utenteRepository.save(utente);
     }
 
-    /* Verifica le credenziali e restituisce l'utente corrispondente.*/
     public Utente login(String email, String password) {
-        Utente utente = utenteRepository.findByEmail(email)
-                .orElseThrow(CredenzialiNonValideException::new);
-        if (!utente.getPassword().equals(password)) {
+        Utente utente = utenteRepository.findByEmail(email).orElseThrow(CredenzialiNonValideException::new);
+
+        if (!passwordEncoder.matches(password, utente.getPassword())) {
             throw new CredenzialiNonValideException();
         }
         return utente;

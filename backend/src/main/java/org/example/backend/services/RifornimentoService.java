@@ -40,7 +40,6 @@ public class RifornimentoService {
         Utente fornitore = utenteRepository.findById(idFornitore)
                 .orElseThrow(() -> new UtenteNonTrovatoException("Utente con id " + idFornitore + " non trovato"));
 
-        // Solo un fornitore puo' rifornire il magazzino.
         if (fornitore.getRuolo() != Ruolo.FORNITORE) {
             throw new OperazioneNonConsentitaException("Solo un fornitore puo' rifornire il magazzino");
         }
@@ -57,10 +56,14 @@ public class RifornimentoService {
             if (riga.getQuantita() <= 0) {
                 throw new OperazioneNonConsentitaException("La quantita' di rifornimento deve essere maggiore di zero");
             }
-            // Ricarica il prodotto gestito dal database a partire dall'id ricevuto
+
             Prodotto prodotto = prodottoRepository.findById(riga.getIdProdotto())
                     .orElseThrow(() -> new ProdottoNonTrovatoException(
                             "Prodotto con id " + riga.getIdProdotto() + " non trovato"));
+
+            if (!prodotto.isDisponibile()) {
+                throw new OperazioneNonConsentitaException("Il prodotto " + prodotto.getNome() + " non e' piu' in vendita");
+            }
 
             DettagliRifornimento dettaglio = new DettagliRifornimento();
             dettaglio.setRifornimento(rifornimento);
@@ -68,13 +71,11 @@ public class RifornimentoService {
             dettaglio.setQuantita(riga.getQuantita());
             dettaglio.setCostoUnitario(riga.getCostoUnitario());
             dettagli.add(dettaglio);
-
-            // Aumenta la scorta del prodotto
             prodotto.setQuantita(prodotto.getQuantita() + riga.getQuantita());
         }
 
         rifornimento.setDettagli(dettagli);
-        return rifornimentoRepository.save(rifornimento); // cascade ALL salva anche le righe
+        return rifornimentoRepository.save(rifornimento);
     }
 
     /* Storico dei rifornimenti di un fornitore dal piu' recente al piu' vecchio. */

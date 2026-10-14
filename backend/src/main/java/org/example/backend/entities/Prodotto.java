@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -13,9 +14,8 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "PRODOTTO")
-public abstract class Prodotto {
+public class Prodotto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -24,10 +24,7 @@ public abstract class Prodotto {
     @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(name = "codice", nullable = true, unique = true)
-    private String codice;
-
-    @Column(name = "marca", nullable = true)
+    @Column(name = "marca", nullable = false)
     private String marca;
 
     @Column(name = "prezzo", nullable = false)
@@ -38,6 +35,16 @@ public abstract class Prodotto {
 
     @Column(name = "immagine_url", nullable = true)
     private String immagineUrl;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "categoria", nullable = false)
+    private Categoria categoria;
+
+    @Column(name = "dettagli", nullable = true, length = 2000)
+    private String dettagli;
+
+    @Column(name = "disponibile", nullable = false)
+    private boolean disponibile = true;
 
     @Version
     @Column(name = "versione", nullable = false)

@@ -2,10 +2,9 @@ package org.example.backend.repositories;
 
 import org.example.backend.entities.Ruolo;
 import org.example.backend.entities.Utente;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 import java.util.Optional;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UtenteRepository extends JpaRepository<Utente, Integer> {
 

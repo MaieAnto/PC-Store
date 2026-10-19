@@ -1,0 +1,61 @@
+<div class="pagina-login">
+  <mat-card class="riquadro" appearance="outlined">
+
+    <div class="marchio">PC<span>//</span>STORE</div>
+    <h1>Accedi</h1>
+    <p class="sottotitolo">Entra nel tuo account per acquistare.</p>
+
+    <form class="credenziali" [formGroup]="form" (ngSubmit)="invia()">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" autocomplete="email" />
+        <mat-icon matSuffix>mail</mat-icon>
+        @if (form.controls.email.hasError('required')) {
+          <mat-error>L'email è obbligatoria.</mat-error>
+        } @else if (form.controls.email.hasError('email')) {
+          <mat-error>Inserisci un'email valida.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="nascondiPassword() ? 'password' : 'text'"
+          formControlName="password"
+          autocomplete="current-password"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="cambiaVisibilitaPassword()"
+          [attr.aria-label]="nascondiPassword() ? 'Mostra password' : 'Nascondi password'"
+        >
+          <mat-icon>{{ nascondiPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (form.controls.password.hasError('required')) {
+          <mat-error>La password è obbligatoria.</mat-error>
+        }
+      </mat-form-field>
+
+      @if (errore()) {
+        <div class="errore-generale">{{ errore() }}</div>
+      }
+
+      <button mat-flat-button color="primary" type="submit" class="btn-accedi" [disabled]="caricamento()">
+        @if (caricamento()) {
+          <mat-spinner diameter="20" />
+          <span>Accesso in corso…</span>
+        } @else {
+          <span>Accedi</span>
+        }
+      </button>
+
+      <p class="link-secondario">
+        Non hai un account? <a routerLink="/registrazione">Registrati</a>
+      </p>
+    </form>
+  </mat-card>
+</div>

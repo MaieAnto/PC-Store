@@ -1,0 +1,76 @@
+.pagina-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+mat-card.riquadro {
+  width: 100%;
+  max-width: 400px;
+  padding: 2.2rem 2rem;
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+  border-radius: var(--r-lg);
+  box-shadow: var(--ombra);
+}
+
+.marchio {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  margin-bottom: 1.4rem;
+  width: fit-content;
+  background: var(--grad-accento);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.marchio span {
+  opacity: 0.55;
+}
+
+.riquadro h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+.sottotitolo {
+  margin: 0.3rem 0 1.6rem;
+  font-size: 0.92rem;
+}
+
+.credenziali {
+  display: flex;
+  flex-direction: column;
+}
+.credenziali mat-form-field {
+  width: 100%;
+}
+
+.errore-generale {
+  margin: 0.25rem 0 0.6rem;
+}
+
+.btn-accedi {
+  margin-top: 0.6rem;
+  height: 46px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.btn-accedi mat-spinner {
+  display: inline-block;
+  margin-right: 0.6rem;
+  vertical-align: middle;
+}
+
+.link-secondario {
+  margin: 1.3rem 0 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--testo-soft);
+}
+.link-secondario a {
+  font-weight: 700;
+}

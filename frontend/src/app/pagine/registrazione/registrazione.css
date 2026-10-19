@@ -1,0 +1,102 @@
+.pagina-registrazione {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+}
+
+mat-card.riquadro {
+  width: 100%;
+  max-width: 480px;
+  padding: 2.2rem 2rem;
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+  border-radius: var(--r-lg);
+  box-shadow: var(--ombra);
+}
+
+.marchio {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  margin-bottom: 1.4rem;
+  width: fit-content;
+  background: var(--grad-accento);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.marchio span {
+  opacity: 0.55;
+}
+
+.riquadro h1 {
+  margin: 0;
+  font-size: 1.7rem;
+}
+.sottotitolo {
+  margin: 0.3rem 0 1.5rem;
+  font-size: 0.92rem;
+}
+.esito .sottotitolo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--successo);
+}
+.icona-ok {
+  color: var(--successo);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.credenziali {
+  display: flex;
+  flex-direction: column;
+}
+.credenziali mat-form-field {
+  width: 100%;
+}
+
+.riga-doppia {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 0.8rem;
+}
+@media (max-width: 460px) {
+  .riga-doppia {
+    grid-template-columns: 1fr;
+  }
+}
+
+.errore-generale {
+  margin: 0.25rem 0 0.6rem;
+}
+
+.btn-invia {
+  margin-top: 0.4rem;
+  height: 46px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.btn-invia mat-spinner {
+  display: inline-block;
+  margin-right: 0.6rem;
+  vertical-align: middle;
+}
+.btn-largo {
+  margin-top: 0.4rem;
+}
+
+.link-secondario {
+  margin: 1.2rem 0 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--testo-soft);
+}
+.link-secondario a {
+  font-weight: 700;
+}

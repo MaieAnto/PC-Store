@@ -1,0 +1,108 @@
+<!--
+  Registrazione : due viste in base al signal completata():
+   - true  -> conferma con link al login
+   - false -> il form di registrazione
+-->
+
+<div class="pagina-registrazione">
+  <mat-card class="riquadro" appearance="outlined">
+
+    <div class="marchio">PC<span>//</span>STORE</div>
+
+    @if (completata()) {
+      <div class="esito">
+        <h1>Account creato</h1>
+        <p class="sottotitolo">
+          <mat-icon class="icona-ok">check_circle</mat-icon>
+          La registrazione è andata a buon fine. Ora puoi accedere.
+        </p>
+        <a mat-flat-button color="primary" routerLink="/login" class="btn-largo">Vai al login</a>
+      </div>
+    } @else {
+
+      <h1>Crea un account</h1>
+      <p class="sottotitolo">Registrati per usare PC Store.</p>
+
+      <form class="credenziali" [formGroup]="form" (ngSubmit)="invia()">
+
+        <div class="riga-doppia">
+          <mat-form-field appearance="outline">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="nome" autocomplete="given-name" />
+            @if (inviato() && form.controls.nome.hasError('required')) {
+              <mat-error>Il nome è obbligatorio.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Cognome</mat-label>
+            <input matInput formControlName="cognome" autocomplete="family-name" />
+            @if (inviato() && form.controls.cognome.hasError('required')) {
+              <mat-error>Il cognome è obbligatorio.</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" autocomplete="email" />
+          <mat-icon matSuffix>mail</mat-icon>
+          @if (inviato() && form.controls.email.hasError('required')) {
+            <mat-error>L'email è obbligatoria.</mat-error>
+          } @else if (inviato() && form.controls.email.hasError('email')) {
+            <mat-error>Inserisci un'email valida.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            [type]="nascondiPassword() ? 'password' : 'text'"
+            formControlName="password"
+            autocomplete="new-password"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="cambiaVisibilitaPassword()"
+            [attr.aria-label]="nascondiPassword() ? 'Mostra password' : 'Nascondi password'"
+          >
+            <mat-icon>{{ nascondiPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (inviato() && form.controls.password.hasError('required')) {
+            <mat-error>La password è obbligatoria.</mat-error>
+          } @else if (inviato() && form.controls.password.hasError('minlength')) {
+            <mat-error>La password deve avere almeno 6 caratteri.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Ruolo</mat-label>
+          <mat-select formControlName="ruolo">
+            <mat-option value="CLIENTE">Cliente</mat-option>
+            <mat-option value="FORNITORE">Fornitore</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        @if (errore()) {
+          <div class="errore-generale">{{ errore() }}</div>
+        }
+
+        <button mat-flat-button color="primary" type="submit" class="btn-invia" [disabled]="caricamento()">
+          @if (caricamento()) {
+            <mat-spinner diameter="20" />
+            <span>Registrazione in corso…</span>
+          } @else {
+            <span>Registrati</span>
+          }
+        </button>
+
+        <p class="link-secondario">
+          Hai già un account? <a routerLink="/login">Accedi</a>
+        </p>
+      </form>
+    }
+  </mat-card>
+</div>

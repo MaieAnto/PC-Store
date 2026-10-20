@@ -1,0 +1,207 @@
+.pagina-catalogo {
+  max-width: var(--largh-max);
+  margin: 0 auto;
+  padding: 1.75rem 1.75rem 3rem;
+}
+
+.intestazione {
+  margin-bottom: 1.25rem;
+}
+.intestazione h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--testo);
+}
+.intestazione .sottotitolo {
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+}
+
+.messaggio-carrello {
+  margin-bottom: 1rem;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 264px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.filtri {
+  position: sticky;
+  top: 1rem;
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+  border-radius: var(--r);
+  padding: 1.1rem 1rem 0.4rem;
+  display: flex;
+  flex-direction: column;
+}
+.filtri-titolo {
+  margin: 0 0 0.6rem;
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--testo-tenue);
+}
+.filtri mat-form-field {
+  width: 100%;
+}
+.prezzi {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 0.6rem;
+}
+.btn-azzera {
+  margin-top: 0.3rem;
+}
+
+.conteggio {
+  margin: 0 0 1rem;
+  color: var(--testo-soft);
+  font-size: 0.9rem;
+}
+.conteggio .dato {
+  color: var(--testo);
+  font-weight: 700;
+}
+.errore-generale {
+  margin-bottom: 1rem;
+}
+
+.griglia {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 1rem;
+}
+
+.scheda {
+  position: relative;
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+  border-radius: var(--r);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color var(--transizione), background-color var(--transizione),
+    box-shadow var(--transizione);
+}
+.scheda:hover {
+  border-color: var(--accento-bordo);
+  background: var(--superficie-2);
+  box-shadow: var(--ombra-accento);
+}
+
+.immagine {
+  height: 160px;
+  background: var(--sfondo-elevato);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--bordo);
+  overflow: hidden;
+}
+.immagine img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.segnaposto-img {
+  color: var(--testo-tenue);
+}
+.segnaposto-img mat-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  opacity: 0.55;
+}
+
+.contenuto {
+  padding: 0.85rem 0.95rem 0.95rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+.riga-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.nome {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.marca {
+  margin: -0.15rem 0 0;
+  color: var(--testo-soft);
+  font-size: 0.85rem;
+}
+
+.prezzo-blocco {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--bordo);
+}
+.prezzo {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  background: var(--grad-accento-2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.btn-carrello {
+  margin-top: 0.3rem;
+  width: 100%;
+}
+
+.clic-dettaglio {
+  cursor: pointer;
+}
+a.immagine.clic-dettaglio {
+  display: flex;
+}
+.nome a.clic-dettaglio {
+  color: inherit;
+}
+.nome a.clic-dettaglio:hover {
+  color: var(--accento);
+}
+
+.paginatore {
+  margin-top: 1.5rem;
+  background: transparent;
+  border: 1px solid var(--bordo);
+  border-radius: var(--r);
+}
+
+@media (max-width: 900px) {
+  .pagina-catalogo {
+    padding: 1.25rem 1rem 2.5rem;
+  }
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .filtri {
+    position: static;
+  }
+  .intestazione h1 {
+    font-size: 1.7rem;
+  }
+}

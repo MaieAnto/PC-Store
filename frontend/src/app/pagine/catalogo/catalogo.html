@@ -1,0 +1,144 @@
+<div class="pagina-catalogo">
+
+  <header class="intestazione">
+    <h1>Catalogo</h1>
+    <p class="sottotitolo">Scegli i componenti per il tuo PC</p>
+  </header>
+
+  @if (messaggioCarrello()) {
+    <div class="messaggio-carrello">{{ messaggioCarrello() }}</div>
+  }
+
+  <div class="layout">
+
+    <!-- Filtri -->
+    <aside class="filtri">
+      <h2 class="filtri-titolo">Filtri</h2>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Cerca per nome</mat-label>
+        <input matInput type="text" [value]="testoRicerca()" (input)="aggiornaTesto('nome', $any($event.target).value)" />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Categoria</mat-label>
+        <mat-select [value]="indiceCategoria()" (selectionChange)="cambiaCategoria($event.value)">
+          @for (categoria of categorie; track categoria.etichetta) {
+            <mat-option [value]="$index">{{ categoria.etichetta }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Marca</mat-label>
+        <input matInput type="text" [value]="marcaFiltro()" (input)="aggiornaTesto('marca', $any($event.target).value)" />
+      </mat-form-field>
+
+      <div class="prezzi">
+        <mat-form-field appearance="outline">
+          <mat-label>Prezzo min</mat-label>
+          <input matInput type="text" inputmode="decimal" [value]="prezzoMin()" (input)="aggiornaTesto('min', $any($event.target).value)" />
+          <span matTextSuffix>€</span>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Prezzo max</mat-label>
+          <input matInput type="text" inputmode="decimal" [value]="prezzoMax()" (input)="aggiornaTesto('max', $any($event.target).value)" />
+          <span matTextSuffix>€</span>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Ordina per</mat-label>
+        <mat-select [value]="ordinamento()" (selectionChange)="cambiaOrdinamento($event.value)">
+          @for (opzione of opzioniOrdinamento; track opzione.valore) {
+            <mat-option [value]="opzione.valore">{{ opzione.etichetta }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-stroked-button type="button" class="btn-azzera" (click)="azzeraFiltri()">
+        <mat-icon>filter_alt_off</mat-icon> Azzera filtri
+      </button>
+    </aside>
+
+    <!-- Risultati -->
+    <section class="risultati">
+      @if (!caricamento() && !errore()) {
+        <p class="conteggio"><span class="dato">{{ totale() }}</span> prodotti a catalogo</p>
+      }
+
+      @if (caricamento()) {
+        <p class="stato">Caricamento in corso…</p>
+      }
+
+      @if (errore()) {
+        <div class="errore-generale">{{ errore() }}</div>
+      }
+
+      @if (!caricamento() && !errore()) {
+        @if (prodotti().length === 0) {
+          <p class="stato">Nessun prodotto corrisponde ai filtri scelti.</p>
+        } @else {
+          <div class="griglia">
+            @for (prodotto of prodotti(); track prodotto.id) {
+              <article class="scheda">
+                <a class="immagine clic-dettaglio" [routerLink]="['/prodotto', prodotto.id]">
+                  @if (prodotto.immagineUrl) {
+                    <img [src]="prodotto.immagineUrl" [alt]="prodotto.nome" />
+                  } @else {
+                    <span class="segnaposto-img"><mat-icon>memory</mat-icon></span>
+                  }
+                </a>
+
+                <div class="contenuto">
+                  <div class="riga-top">
+                    <span class="categoria-badge">{{ prodotto.categoria }}</span>
+                    @if (prodotto.quantita > 0) {
+                      <span class="disponibilita disponibile">Disponibile</span>
+                    } @else {
+                      <span class="disponibilita esaurito">Esaurito</span>
+                    }
+                  </div>
+
+                  <h2 class="nome"><a class="clic-dettaglio" [routerLink]="['/prodotto', prodotto.id]">{{ prodotto.nome }}</a></h2>
+                  @if (prodotto.marca) {
+                    <p class="marca">{{ prodotto.marca }}</p>
+                  }
+
+                  <div class="prezzo-blocco">
+                    <span class="campo-label">Prezzo</span>
+                    <span class="prezzo dato">{{ prodotto.prezzo.toFixed(2) }} €</span>
+                  </div>
+
+                  @if (eCliente()) {
+                    <button
+                      mat-flat-button
+                      color="primary"
+                      type="button"
+                      class="btn-carrello"
+                      [disabled]="prodotto.quantita <= 0 || idInAggiunta() === prodotto.id"
+                      (click)="aggiungiAlCarrello(prodotto)"
+                    >
+                      <mat-icon>add_shopping_cart</mat-icon>
+                      @if (idInAggiunta() === prodotto.id) { Aggiungendo… } @else { Aggiungi }
+                    </button>
+                  }
+                </div>
+              </article>
+            }
+          </div>
+
+          <mat-paginator
+            class="paginatore"
+            [length]="totale()"
+            [pageSize]="DIMENSIONE_PAGINA"
+            [pageIndex]="pagina()"
+            [hidePageSize]="true"
+            (page)="cambiaPagina($event)"
+          />
+        }
+      }
+    </section>
+  </div>
+</div>

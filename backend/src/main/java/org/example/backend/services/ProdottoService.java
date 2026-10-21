@@ -122,10 +122,8 @@ public class ProdottoService {
     }
 
     private Sort costruisciOrdinamento(String ordinaPer, String direzione) {
-        String campo = (ordinaPer != null && ORDINAMENTI_AMMESSI.contains(ordinaPer))
-                ? ordinaPer : ORDINAMENTO_DEFAULT;
-        Sort.Direction direzioneSort = "desc".equalsIgnoreCase(direzione)
-                ? Sort.Direction.DESC : Sort.Direction.ASC;
+        String campo = (ordinaPer != null && ORDINAMENTI_AMMESSI.contains(ordinaPer)) ? ordinaPer : ORDINAMENTO_DEFAULT;
+        Sort.Direction direzioneSort = "desc".equalsIgnoreCase(direzione) ? Sort.Direction.DESC : Sort.Direction.ASC;
         return Sort.by(direzioneSort, campo);
     }
 

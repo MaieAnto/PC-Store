@@ -1,0 +1,189 @@
+/* Stile della schermata del Carrello. */
+.pagina-carrello {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 1.75rem 1.5rem 3.5rem;
+}
+
+.intestazione {
+  margin-bottom: 1.25rem;
+}
+.intestazione h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+.sottotitolo {
+  margin: 4px 0 0;
+}
+
+.stato-centrato {
+  display: flex;
+  justify-content: center;
+  padding: 2.5rem 0;
+}
+.errore-generale {
+  margin: 1rem 0;
+}
+
+/* Carrello vuoto */
+mat-card.carrello-vuoto {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+.carrello-vuoto mat-icon {
+  font-size: 46px;
+  width: 46px;
+  height: 46px;
+  color: var(--testo-tenue);
+}
+
+/* Righe del carrello */
+.righe {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+mat-card.riga {
+  display: grid;
+  grid-template-columns: 72px 1fr auto auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 0.8rem 1rem;
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+}
+.riga .immagine {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--superficie-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.riga .immagine img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.segnaposto-img mat-icon {
+  color: var(--testo-tenue);
+}
+.descrizione {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.descrizione .nome {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.descrizione .marca {
+  margin: 0;
+  color: var(--testo-soft);
+  font-size: 0.85rem;
+}
+.prezzo-unitario {
+  margin: 0;
+  color: var(--testo-tenue);
+  font-size: 0.85rem;
+}
+
+.quantita {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid var(--bordo-forte);
+  border-radius: var(--r-pill);
+  padding: 2px 4px;
+}
+.valore-quantita {
+  min-width: 26px;
+  text-align: center;
+  font-weight: 700;
+}
+.subtotale {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 1.02rem;
+  white-space: nowrap;
+}
+.prezzo-unitario {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Riepilogo */
+mat-card.riepilogo {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.totali {
+  display: flex;
+  flex-direction: column;
+}
+.conteggio {
+  margin: 0;
+  color: var(--testo-soft);
+  font-size: 0.9rem;
+}
+.totale {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--accento);
+}
+.azioni {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Conferma ordine */
+mat-card.conferma-ordine {
+  margin-top: 1rem;
+  padding: 1.1rem 1.25rem;
+  background: var(--accento-tenue);
+  border: 1px solid var(--accento-bordo);
+}
+.conferma-ordine > p {
+  margin: 0 0 0.75rem;
+}
+.conferma-ordine .azioni {
+  justify-content: flex-end;
+}
+
+@media (max-width: 620px) {
+  mat-card.riga {
+    grid-template-columns: 60px 1fr auto;
+    row-gap: 8px;
+  }
+  /* La descrizione occupa le due colonne a destra dell'immagine; quantità,
+     subtotale e rimozione vanno a capo sotto. */
+  .descrizione {
+    grid-column: 2 / -1;
+  }
+  .subtotale {
+    text-align: right;
+  }
+}

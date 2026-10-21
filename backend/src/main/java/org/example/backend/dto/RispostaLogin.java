@@ -11,9 +11,6 @@ public class RispostaLogin {
     private String token;
     private Utente utente;
 
-    public RispostaLogin() {
-    }
-
     public RispostaLogin(String token, Utente utente) {
         this.token = token;
         this.utente = utente;

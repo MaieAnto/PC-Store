@@ -6,8 +6,4 @@ public class EmailGiaRegistrataException extends RuntimeException {
     public EmailGiaRegistrataException() {
         super("Esiste gia' un utente registrato con questa email");
     }
-
-    public EmailGiaRegistrataException(String messaggio) {
-        super(messaggio);
-    }
 }

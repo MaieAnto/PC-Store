@@ -1,0 +1,117 @@
+<!-- Schermata del Carrello (Angular Material). -->
+<div class="pagina-carrello">
+
+  <header class="intestazione">
+    <h1>Il tuo carrello</h1>
+    <p class="sottotitolo">Rivedi i prodotti prima di ordinare</p>
+  </header>
+
+  <!-- Stato: caricamento -->
+  @if (caricamento()) {
+    <div class="stato-centrato"><mat-spinner diameter="40" /></div>
+  }
+
+  <!-- Stato: errore dal backend -->
+  @if (errore()) {
+    <div class="errore-generale">{{ errore() }}</div>
+  }
+
+  @if (!caricamento()) {
+
+    <!-- Carrello vuoto -->
+    @if (righe().length === 0) {
+      <mat-card class="carrello-vuoto" appearance="outlined">
+        <mat-icon>shopping_cart</mat-icon>
+        <p>Il tuo carrello è vuoto.</p>
+        <a mat-flat-button color="primary" routerLink="/catalogo">Vai al catalogo</a>
+      </mat-card>
+    } @else {
+
+      <!-- Elenco delle righe del carrello -->
+      <div class="righe">
+        @for (riga of righe(); track riga.id) {
+          <mat-card class="riga" appearance="outlined">
+            <!-- Immagine del prodotto (o segnaposto) -->
+            <div class="immagine">
+              @if (riga.prodotto.immagineUrl) {
+                <img [src]="riga.prodotto.immagineUrl" [alt]="riga.prodotto.nome" />
+              } @else {
+                <span class="segnaposto-img"><mat-icon>image_not_supported</mat-icon></span>
+              }
+            </div>
+
+            <!-- Descrizione: categoria, nome, marca, prezzo unitario -->
+            <div class="descrizione">
+              <span class="categoria-badge">{{ riga.prodotto.categoria }}</span>
+              <h2 class="nome">{{ riga.prodotto.nome }}</h2>
+              @if (riga.prodotto.marca) {
+                <p class="marca">{{ riga.prodotto.marca }}</p>
+              }
+              <p class="prezzo-unitario">{{ riga.prodotto.prezzo.toFixed(2) }} € cad.</p>
+            </div>
+
+            <!-- Selettore quantità: - [valore] + -->
+            <div class="quantita">
+              <button mat-icon-button type="button" [disabled]="riga.quantita <= 1" (click)="diminuisci(riga)" aria-label="Diminuisci">
+                <mat-icon>remove</mat-icon>
+              </button>
+              <span class="valore-quantita">{{ riga.quantita }}</span>
+              <button mat-icon-button type="button" [disabled]="riga.quantita >= riga.prodotto.quantita" (click)="aumenta(riga)" aria-label="Aumenta">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+
+            <!-- Subtotale della riga (prezzo * quantità) -->
+            <div class="subtotale">
+              {{ (riga.prodotto.prezzo * riga.quantita).toFixed(2) }} €
+            </div>
+
+            <!-- Rimuovi la riga -->
+            <button mat-icon-button color="warn" type="button" (click)="rimuovi(riga)" aria-label="Rimuovi dal carrello">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-card>
+        }
+      </div>
+
+      <!-- Riepilogo: numero articoli, totale e azioni -->
+      <mat-card class="riepilogo" appearance="outlined">
+        <div class="totali">
+          <p class="conteggio">{{ numeroArticoli() }} articoli</p>
+          <p class="totale">Totale: <strong>{{ totale().toFixed(2) }} €</strong></p>
+        </div>
+
+        <div class="azioni">
+          <button mat-stroked-button type="button" (click)="svuota()">
+            <mat-icon>delete_sweep</mat-icon> Svuota
+          </button>
+          <button mat-flat-button color="primary" type="button" (click)="procediOrdine()">
+            Procedi all'ordine
+          </button>
+        </div>
+      </mat-card>
+
+      <!-- Pannello di conferma dell'ordine (checkout) -->
+      @if (confermaVisibile()) {
+        <mat-card class="conferma-ordine" appearance="outlined">
+          <p>Confermi l'ordine di <strong>{{ numeroArticoli() }}</strong> articoli per
+             <strong>{{ totale().toFixed(2) }} €</strong>?</p>
+
+          @if (erroreOrdine()) {
+            <div class="errore-generale">{{ erroreOrdine() }}</div>
+          }
+
+          <div class="azioni">
+            <button mat-button type="button" [disabled]="invioOrdine()" (click)="annullaOrdine()">
+              Annulla
+            </button>
+            <button mat-flat-button color="primary" type="button" [disabled]="invioOrdine()" (click)="confermaOrdine()">
+              @if (invioOrdine()) { Invio in corso… } @else { Conferma ordine }
+            </button>
+          </div>
+        </mat-card>
+      }
+    }
+  }
+
+</div>

@@ -7,7 +7,4 @@ public class CredenzialiNonValideException extends RuntimeException {
         super("Email o password non corretti");
     }
 
-    public CredenzialiNonValideException(String messaggio) {
-        super(messaggio);
-    }
 }

@@ -1,0 +1,55 @@
+<!-- Schermata "I miei ordini" (Angular Material, pannelli espandibili). -->
+<div class="pagina-ordini">
+
+  <header class="intestazione">
+    <h1>I miei ordini</h1>
+    <p class="sottotitolo">Lo storico dei tuoi acquisti</p>
+  </header>
+
+  <!-- Stato: caricamento -->
+  @if (caricamento()) {
+    <div class="stato-centrato"><mat-spinner diameter="40" /></div>
+  }
+
+  <!-- Stato: errore -->
+  @if (errore()) {
+    <div class="errore-generale">{{ errore() }}</div>
+  }
+
+  <!-- Contenuto -->
+  @if (!caricamento() && !errore()) {
+    @if (ordini().length === 0) {
+      <div class="vuoto">
+        <mat-icon>receipt_long</mat-icon>
+        <p>Non hai ancora effettuato ordini.</p>
+        <a mat-flat-button color="primary" routerLink="/catalogo">Vai al catalogo</a>
+      </div>
+    } @else {
+      <mat-accordion class="elenco-ordini" multi>
+        @for (ordine of ordini(); track ordine.id) {
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Ordine #{{ ordine.id }}</mat-panel-title>
+              <mat-panel-description>
+                <span class="data">{{ dataLeggibile(ordine.dataOrdine) }}</span>
+                <span class="articoli">{{ numeroArticoli(ordine) }} articoli</span>
+                <span class="totale">{{ totaleOrdine(ordine).toFixed(2) }} €</span>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <div class="righe">
+              @for (riga of ordine.dettagli; track riga.id) {
+                <div class="riga">
+                  <span class="nome-prodotto">{{ riga.prodotto.nome }}</span>
+                  <span class="dettaglio-riga">{{ riga.quantita }} × {{ riga.prezzoUnitario.toFixed(2) }} €</span>
+                  <span class="subtotale-riga">{{ (riga.prezzoUnitario * riga.quantita).toFixed(2) }} €</span>
+                </div>
+              }
+            </div>
+          </mat-expansion-panel>
+        }
+      </mat-accordion>
+    }
+  }
+
+</div>

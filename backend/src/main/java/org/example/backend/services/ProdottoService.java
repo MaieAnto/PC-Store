@@ -92,22 +92,6 @@ public class ProdottoService {
         return prodottoRepository.findByDisponibileTrue();
     }
 
-    public List<Prodotto> cercaPerNome(String nome) {
-        return prodottoRepository.findByDisponibileTrueAndNomeContainingIgnoreCase(nome);
-    }
-
-    public List<Prodotto> cercaPerMarca(String marca) {
-        return prodottoRepository.findByDisponibileTrueAndMarcaIgnoreCase(marca);
-    }
-
-    /* Ricerca per fascia di prezzo*/
-    public List<Prodotto> cercaPerFasciaPrezzo(float prezzoMin, float prezzoMax) {
-        if (prezzoMin > prezzoMax) {
-            throw new OperazioneNonConsentitaException("Il prezzo minimo non puo' essere maggiore del massimo");
-        }
-        return prodottoRepository.findByDisponibileTrueAndPrezzoBetween(prezzoMin, prezzoMax);
-    }
-
     public Page<Prodotto> cercaCatalogoPaginato(String nome, String marca, String categoria,
                                                 Float prezzoMin, Float prezzoMax, int pagina, int dimensione,
                                                 String ordinaPer, String direzione) {

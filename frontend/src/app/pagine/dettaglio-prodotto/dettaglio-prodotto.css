@@ -1,0 +1,222 @@
+/* Stile della card di dettaglio prodotto. */
+.pagina-dettaglio {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 3.5rem;
+}
+
+.link-catalogo {
+  margin-bottom: 1rem;
+}
+
+.stato-centrato {
+  display: flex;
+  justify-content: center;
+  padding: 2.5rem 0;
+}
+.errore-generale {
+  margin: 1rem 0;
+}
+
+/* --- Testata: immagine + info --- */
+mat-card.testata {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 1.5rem;
+  padding: 1.25rem;
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+}
+.immagine {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--superficie-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.immagine img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.segnaposto-img {
+  color: var(--testo-tenue);
+}
+.segnaposto-img mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+.info .nome {
+  margin: 0;
+  font-size: 1.7rem;
+}
+.info .marca {
+  margin: 0;
+  color: var(--testo-soft);
+}
+.prezzo-blocco {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin: 0.5rem 0;
+}
+.prezzo {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  background: var(--grad-accento-2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Selettore quantità + aggiungi */
+.acquisto {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 0.3rem;
+}
+.quantita {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--bordo-forte);
+  border-radius: var(--r-pill);
+  padding: 2px 6px;
+}
+.valore-quantita {
+  min-width: 28px;
+  text-align: center;
+  font-weight: 700;
+}
+.messaggio-carrello {
+  margin-top: 0.6rem;
+}
+
+/* --- Sezioni dettagli / recensioni --- */
+mat-card.sezione {
+  margin-top: 1.25rem;
+  padding: 1.25rem 1.4rem;
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+}
+mat-card.sezione h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+}
+.testo-dettagli {
+  margin: 0;
+  color: var(--testo-soft);
+  line-height: 1.6;
+}
+
+/* Form recensione */
+.form-recensione {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--bordo);
+}
+.etichetta-form {
+  margin: 0 0 0.3rem;
+  font-weight: 600;
+}
+.scelta-voto {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 0.5rem;
+}
+.scelta-voto .stella-voto mat-icon {
+  color: var(--stella);
+}
+.commento-campo {
+  width: 100%;
+}
+.gia-recensito {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--successo);
+  font-weight: 600;
+}
+.gia-recensito mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* Media + elenco recensioni */
+.media {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0.5rem 0 1rem;
+}
+.media .stelle,
+.recensione .stelle {
+  color: var(--stella);
+  letter-spacing: 2px;
+}
+.media-valore {
+  font-weight: 700;
+}
+.conteggio-recensioni {
+  color: var(--testo-tenue);
+  font-size: 0.9rem;
+}
+
+.lista-recensioni {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.recensione {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--bordo);
+  border-radius: var(--r-sm);
+  background: var(--superficie-2);
+}
+.riga-testata {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.riga-testata .autore {
+  font-weight: 600;
+}
+.riga-testata .data {
+  color: var(--testo-tenue);
+  font-size: 0.85rem;
+  margin-left: auto;
+}
+.recensione .commento {
+  margin: 0.4rem 0 0;
+  color: var(--testo-soft);
+}
+
+@media (max-width: 620px) {
+  mat-card.testata {
+    grid-template-columns: 1fr;
+  }
+  .immagine {
+    max-width: 260px;
+  }
+}

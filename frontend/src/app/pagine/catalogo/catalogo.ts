@@ -1,12 +1,11 @@
-import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatBadgeModule } from '@angular/material/badge';
 import { ProdottoService } from '../../servizi/prodotto.service';
 import { CarrelloService } from '../../servizi/carrello.service';
 import { AutenticazioneService } from '../../servizi/autenticazione.service';
@@ -23,16 +22,14 @@ import { Ruolo } from '../../modelli/utente';
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
-    MatBadgeModule,
   ],
   templateUrl: './catalogo.html',
   styleUrl: './catalogo.css',
 })
-export class Catalogo implements OnInit, OnDestroy {
+export class Catalogo implements OnInit {
   private readonly prodottoService = inject(ProdottoService);
   private readonly carrelloService = inject(CarrelloService);
   private readonly autenticazioneService = inject(AutenticazioneService);
-  private readonly router = inject(Router);
 
   protected readonly utente = this.autenticazioneService.utenteCorrente;
 
@@ -48,7 +45,6 @@ export class Catalogo implements OnInit, OnDestroy {
   protected readonly caricamento = signal(false); // true mentre aspettiamo il backend
   protected readonly errore = signal(''); // messaggio di errore ('' = nessuno)
 
-  protected readonly numeroCarrello = signal(0); // quanti articoli ci sono nel carrello
   protected readonly messaggioCarrello = signal(''); // breve conferma dopo un "aggiungi"
   protected readonly idInAggiunta = signal<number | null>(null); // id del prodotto per cui e' in corso una chiamata
 
@@ -69,77 +65,48 @@ export class Catalogo implements OnInit, OnDestroy {
     { valore: 'marca-asc', etichetta: 'Marca (A–Z)' },
   ];
 
-  private timerRicerca?: ReturnType<typeof setTimeout>;
-
-  // carica la prima pagina del catalogo e il numero di articoli nel carrello.
+  // carica la prima pagina del catalogo.
   ngOnInit(): void {
     this.carica();
-    this.aggiornaNumeroCarrello();
   }
 
-  ngOnDestroy(): void {
-    clearTimeout(this.timerRicerca);
-  }
-
-  /* dimentica l'utente corrente e torna al login. */
-  logout(): void {
-    this.autenticazioneService.logout();
-    this.router.navigate(['/login']);
-  }
-
-  /* Cambia la categoria selezionata */
   cambiaCategoria(indice: number): void {
     this.indiceCategoria.set(indice);
-    this.applicaFiltri();
   }
 
-  /* Cambia l'ordinamento */
   cambiaOrdinamento(valore: string): void {
     this.ordinamento.set(valore);
-    this.applicaFiltri();
   }
 
-  /* Aggiorna un filtro di testo (nome/marca/prezzo) e ricarica con un piccolo
-     ritardo, cosi' non partono richieste a ogni singolo tasto. */
   aggiornaTesto(campo: 'nome' | 'marca' | 'min' | 'max', valore: string): void {
     if (campo === 'nome') this.testoRicerca.set(valore);
     else if (campo === 'marca') this.marcaFiltro.set(valore);
     else if (campo === 'min') this.prezzoMin.set(valore);
     else this.prezzoMax.set(valore);
+  }
 
-    clearTimeout(this.timerRicerca);
-    this.timerRicerca = setTimeout(() => this.applicaFiltri(), 350);
+  /* Pulsante "Cerca": applica i filtri correnti e riparte dalla prima pagina. */
+  cerca(): void {
+    this.pagina.set(0);
+    this.carica();
   }
 
   /* Azzera tutti i filtri e ricarica dalla prima pagina. */
   azzeraFiltri(): void {
-    clearTimeout(this.timerRicerca);
     this.testoRicerca.set('');
     this.marcaFiltro.set('');
     this.prezzoMin.set('');
     this.prezzoMax.set('');
     this.indiceCategoria.set(0);
     this.ordinamento.set('nome-asc');
-    this.applicaFiltri();
+    this.cerca();
   }
 
-  /* Evento del mat-paginator: l'utente ha cambiato pagina. */
   cambiaPagina(evento: PageEvent): void {
     this.pagina.set(evento.pageIndex);
     this.carica();
   }
 
-  /* Un filtro/ordinamento e' cambiato: si riparte sempre dalla prima pagina. */
-  private applicaFiltri(): void {
-    this.pagina.set(0);
-    this.carica();
-  }
-
-  /*
-   * Pulsante "Aggiungi al carrello": aggiunge 1 pezzo del prodotto al carrello
-   * dell'utente loggato; alla risposta aggiorna il contatore e mostra un breve
-   * messaggio di conferma.
-   */
   aggiungiAlCarrello(prodotto: Prodotto): void {
     const utente = this.utente();
     if (!utente) {
@@ -151,8 +118,7 @@ export class Catalogo implements OnInit, OnDestroy {
     this.idInAggiunta.set(prodotto.id);
 
     this.carrelloService.aggiungi(utente.id, prodotto.id, 1).subscribe({
-      next: (carrello) => {
-        this.numeroCarrello.set(this.contaArticoli(carrello.dettagli ?? []));
+      next: () => {
         this.messaggioCarrello.set(`"${prodotto.nome}" aggiunto al carrello.`);
         this.idInAggiunta.set(null);
       },
@@ -165,10 +131,7 @@ export class Catalogo implements OnInit, OnDestroy {
     });
   }
 
-  /*
-   * Converte il testo di un campo prezzo in numero.
-   * Campo vuoto o testo non numerico -> null, cioe' "nessun limite".
-   */
+  /* Converto il testo di un campo prezzo in numero  */
   private numeroOppureNull(testo: string): number | null {
     const pulito = testo.trim();
     if (pulito === '') {
@@ -178,39 +141,11 @@ export class Catalogo implements OnInit, OnDestroy {
     return Number.isNaN(numero) ? null : numero;
   }
 
-  /*
-   * Somma le quantita' di tutte le righe: e' il numero di articoli nel carrello.
-   */
-  private contaArticoli(righe: { quantita: number }[]): number {
-    return righe.reduce((somma, r) => somma + r.quantita, 0);
-  }
-
-  /*
-   * Chiede al backend le righe del carrello per aggiornare il badge in alto.
-   * Se l'utente non e' loggato o la chiamata fallisce, il badge resta a 0.
-   */
-  private aggiornaNumeroCarrello(): void {
-    const utente = this.utente();
-    if (!utente) {
-      this.numeroCarrello.set(0);
-      return;
-    }
-    this.carrelloService.getDettagli(utente.id).subscribe({
-      next: (righe) => this.numeroCarrello.set(this.contaArticoli(righe)),
-      error: () => this.numeroCarrello.set(0),
-    });
-  }
-
-  /*
-   * Chiede al backend UNA pagina del catalogo, con i filtri e l'ordinamento
-   * correnti. Il filtraggio e la paginazione avvengono interamente lato server.
-   */
+  /* Chiede al backend una pagina del catalogo, con i filtri e l'ordinamento correnti */
   private carica(): void {
     this.caricamento.set(true);
     this.errore.set('');
 
-    // Categoria selezionata: la prima voce ("Tutte le categorie") ha
-    // endpoint null e significa "nessun filtro di categoria".
     const categoriaScelta = this.categorie[this.indiceCategoria()];
     const [ordinaPer, direzione] = this.ordinamento().split('-');
 

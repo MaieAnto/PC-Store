@@ -15,7 +15,7 @@ import java.util.List;
 
 /* Filtro che gira UNA volta per ogni richiesta HTTP
 
-   Compito: se la richiesta porta un token valido nell'header
+    se la richiesta porta un token valido nell'header
    "Authorization: Bearer <token>", riconosce l'utente e lo segna come
    "autenticato" dentro Spring Security, indicando anche il suo RUOLO
    (ROLE_CLIENTE / ROLE_FORNITORE). Da quel momento le regole in SecurityConfig
@@ -46,14 +46,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 String email = jwtUtil.extractEmail(token);
                 String ruolo = jwtUtil.extractRuolo(token);
                 var autorizzazioni = List.of(new SimpleGrantedAuthority("ROLE_" + ruolo));
-
-                var autenticazione =
-                        new UsernamePasswordAuthenticationToken(email, null, autorizzazioni);
-
+                var autenticazione = new UsernamePasswordAuthenticationToken(email, null, autorizzazioni);
                 SecurityContextHolder.getContext().setAuthentication(autenticazione);
             }
         }
-
         filterChain.doFilter(request, response);
     }
 }

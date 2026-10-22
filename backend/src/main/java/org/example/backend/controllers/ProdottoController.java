@@ -35,24 +35,6 @@ public class ProdottoController {
         return new PaginaProdotti(prodottoService.cercaCatalogoPaginato(nome, marca, categoria, min, max, pagina, dimensione, ordinaPer, direzione));
     }
 
-    // Ricerca per nome case-insensitive
-    @GetMapping("/cerca")
-    public List<Prodotto> cercaPerNome(@RequestParam String nome) {
-        return prodottoService.cercaPerNome(nome);
-    }
-
-    //Ricerca per marca
-    @GetMapping("/marca")
-    public List<Prodotto> cercaPerMarca(@RequestParam String marca) {
-        return prodottoService.cercaPerMarca(marca);
-    }
-
-    //Ricerca per fascia di prezzo
-    @GetMapping("/prezzo")
-    public List<Prodotto> cercaPerFasciaPrezzo(@RequestParam float min, @RequestParam float max) {
-        return prodottoService.cercaPerFasciaPrezzo(min, max);
-    }
-
     // Dettaglio di un singolo prodotto
     @GetMapping("/{id}")
     public Prodotto trovaPerId(@PathVariable int id) {

@@ -26,10 +26,4 @@ public interface ProdottoRepository extends JpaRepository<Prodotto, Integer> {
     List<Prodotto> findByDisponibileTrue();
 
     List<Prodotto> findByDisponibileFalse();
-
-    List<Prodotto> findByDisponibileTrueAndNomeContainingIgnoreCase(String nome);
-
-    List<Prodotto> findByDisponibileTrueAndMarcaIgnoreCase(String marca);
-
-    List<Prodotto> findByDisponibileTrueAndPrezzoBetween(float prezzoMin, float prezzoMax);
 }

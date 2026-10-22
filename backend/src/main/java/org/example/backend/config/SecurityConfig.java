@@ -21,11 +21,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http
-                // CSRF: non serve per un'API REST stateless consumata da Angular.
                 .csrf(csrf -> csrf.disable())
-                // CORS abilitato.
                 .cors(Customizer.withDefaults())
-                // Nessuna sessione, ci si affida al token a ogni richiesta.
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -43,9 +40,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/prodotti").hasRole("FORNITORE")
                         .requestMatchers(HttpMethod.PUT, "/api/prodotti/**").hasRole("FORNITORE")
                         .requestMatchers(HttpMethod.DELETE, "/api/prodotti/**").hasRole("FORNITORE")
-                        // --- Rifornimenti magazzino solo fornitore
+                        // Rifornimenti magazzino solo fornitore
                         .requestMatchers("/api/rifornimenti/**").hasRole("FORNITORE")
-                        // --- Carrello, ordini e creazione recensioni solo cliente
+                        // Carrello, ordini e creazione recensioni solo cliente
                         .requestMatchers("/api/carrello/**").hasRole("CLIENTE")
                         .requestMatchers("/api/ordini/**").hasRole("CLIENTE")
                         .requestMatchers(HttpMethod.POST, "/api/recensioni").hasRole("CLIENTE")

@@ -1,0 +1,170 @@
+<!-- Card di dettaglio del prodotto (Angular Material). -->
+<div class="pagina-dettaglio">
+
+  <a mat-button routerLink="/catalogo" class="link-catalogo">
+    <mat-icon>arrow_back</mat-icon> Torna al catalogo
+  </a>
+
+  <!-- Stato: caricamento -->
+  @if (caricamento()) {
+    <div class="stato-centrato"><mat-spinner diameter="40" /></div>
+  }
+
+  <!-- Stato: errore -->
+  @if (errore()) {
+    <div class="errore-generale">{{ errore() }}</div>
+  }
+
+  <!-- Contenuto: mostrato solo quando abbiamo il prodotto -->
+  @if (prodotto(); as p) {
+
+    <!-- Parte alta: immagine + informazioni principali -->
+    <mat-card class="testata" appearance="outlined">
+      <div class="immagine">
+        @if (p.immagineUrl) {
+          <img [src]="p.immagineUrl" [alt]="p.nome" />
+        } @else {
+          <span class="segnaposto-img"><mat-icon>image_not_supported</mat-icon></span>
+        }
+      </div>
+
+      <div class="info">
+        <span class="categoria-badge">{{ p.categoria }}</span>
+        <h1 class="nome">{{ p.nome }}</h1>
+        @if (p.marca) {
+          <p class="marca">{{ p.marca }}</p>
+        }
+
+        @if (!p.disponibile) {
+          <span class="disponibilita esaurito">Non più in vendita</span>
+        } @else if (p.quantita > 0) {
+          <span class="disponibilita disponibile">Disponibile ({{ p.quantita }} in magazzino)</span>
+        } @else {
+          <span class="disponibilita esaurito">Esaurito</span>
+        }
+
+        <div class="prezzo-blocco">
+          <span class="campo-label">Prezzo</span>
+          <span class="prezzo dato">{{ p.prezzo.toFixed(2) }} €</span>
+        </div>
+
+        <!-- Selettore quantità + aggiungi al carrello (solo clienti) -->
+        @if (eCliente() && p.disponibile && p.quantita > 0) {
+          <div class="acquisto">
+            <div class="quantita">
+              <button mat-icon-button type="button" [disabled]="quantitaScelta() <= 1" (click)="diminuisci()" aria-label="Diminuisci">
+                <mat-icon>remove</mat-icon>
+              </button>
+              <span class="valore-quantita">{{ quantitaScelta() }}</span>
+              <button mat-icon-button type="button" [disabled]="quantitaScelta() >= p.quantita" (click)="aumenta()" aria-label="Aumenta">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+            <button mat-flat-button color="primary" type="button" (click)="aggiungiAlCarrello()">
+              <mat-icon>add_shopping_cart</mat-icon> Aggiungi al carrello
+            </button>
+          </div>
+        }
+
+        <!-- Messaggio di conferma/avviso -->
+        @if (messaggioCarrello()) {
+          <div class="messaggio-carrello">{{ messaggioCarrello() }}</div>
+        }
+      </div>
+    </mat-card>
+
+    <!-- Dettagli tecnici (testo libero) -->
+    <mat-card class="sezione" appearance="outlined">
+      <h2>Dettagli</h2>
+      @if (p.dettagli) {
+        <p class="testo-dettagli" style="white-space: pre-line">{{ p.dettagli }}</p>
+      } @else {
+        <p class="stato">Nessun dettaglio indicato.</p>
+      }
+    </mat-card>
+
+    <!-- Recensioni -->
+    <mat-card class="sezione" appearance="outlined">
+      <h2>Recensioni</h2>
+
+      <!-- Form per scrivere una recensione: solo per un cliente che non ha ancora recensito -->
+      @if (eCliente()) {
+        @if (giaRecensito()) {
+          <p class="gia-recensito"><mat-icon>check</mat-icon> Hai già recensito questo prodotto.</p>
+        } @else {
+          <div class="form-recensione">
+            <p class="etichetta-form">Lascia la tua recensione</p>
+
+            <!-- Selettore del voto a stelle cliccabili -->
+            <div class="scelta-voto">
+              @for (i of stelleVoto; track i) {
+                <button
+                  mat-icon-button
+                  type="button"
+                  class="stella-voto"
+                  (click)="impostaVoto(i)"
+                  [attr.aria-label]="i + ' stelle'"
+                >
+                  <mat-icon>{{ votoScelto() >= i ? 'star' : 'star_border' }}</mat-icon>
+                </button>
+              }
+            </div>
+
+            <!-- Commento facoltativo -->
+            <mat-form-field appearance="outline" class="commento-campo">
+              <mat-label>Commento (facoltativo)</mat-label>
+              <textarea
+                matInput
+                rows="3"
+                #campoCommento
+                [value]="commentoTesto()"
+                (input)="commentoTesto.set(campoCommento.value)"
+              ></textarea>
+            </mat-form-field>
+
+            @if (erroreRecensione()) {
+              <div class="errore-generale">{{ erroreRecensione() }}</div>
+            }
+
+            <button mat-flat-button color="primary" type="button" [disabled]="invioRecensione()" (click)="inviaRecensione()">
+              @if (invioRecensione()) { Invio… } @else { Pubblica recensione }
+            </button>
+          </div>
+        }
+      }
+
+      <!-- Esito della pubblicazione -->
+      @if (messaggioRecensione()) {
+        <div class="messaggio-carrello">{{ messaggioRecensione() }}</div>
+      }
+
+      @if (recensioni().length === 0) {
+        <p class="stato">Questo prodotto non ha ancora recensioni.</p>
+      } @else {
+        <!-- Media in cima -->
+        <p class="media">
+          <span class="stelle">{{ stelle(media()) }}</span>
+          <span class="media-valore">{{ mediaArrotondata() }} / 5</span>
+          <span class="conteggio-recensioni">· {{ recensioni().length }} recensioni</span>
+        </p>
+
+        <!-- Elenco recensioni -->
+        <ul class="lista-recensioni">
+          @for (recensione of recensioni(); track recensione.id) {
+            <li class="recensione">
+              <div class="riga-testata">
+                <span class="autore">{{ recensione.autore.nome }} {{ recensione.autore.cognome }}</span>
+                <span class="stelle">{{ stelle(recensione.valutazione) }}</span>
+                <span class="data">{{ dataLeggibile(recensione.dataRecensione) }}</span>
+              </div>
+              @if (recensione.commento) {
+                <p class="commento">{{ recensione.commento }}</p>
+              }
+            </li>
+          }
+        </ul>
+      }
+    </mat-card>
+  }
+
+</div>

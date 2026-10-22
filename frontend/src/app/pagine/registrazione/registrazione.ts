@@ -41,7 +41,7 @@ export class Registrazione {
     nome: ['', [Validators.required]],
     cognome: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
     ruolo: ['CLIENTE', [Validators.required]],
   });
 

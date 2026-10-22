@@ -55,6 +55,9 @@
   grid-template-columns: 1fr 1fr;
   gap: 0 0.6rem;
 }
+.btn-cerca {
+  margin-top: 0.6rem;
+}
 .btn-azzera {
   margin-top: 0.3rem;
 }

@@ -117,7 +117,7 @@ export class Catalogo implements OnInit {
     this.messaggioCarrello.set('');
     this.idInAggiunta.set(prodotto.id);
 
-    this.carrelloService.aggiungi(utente.id, prodotto.id, 1).subscribe({
+    this.carrelloService.aggiungi(prodotto.id, 1).subscribe({
       next: () => {
         this.messaggioCarrello.set(`"${prodotto.nome}" aggiunto al carrello.`);
         this.idInAggiunta.set(null);

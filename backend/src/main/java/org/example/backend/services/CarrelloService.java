@@ -35,7 +35,7 @@ public class CarrelloService {
 
     /* Restituisce il carrello dell'utente, se non esiste lo crea */
     @Transactional
-    public Carrello getOppureCreaCarrello(int idUtente) {
+    private Carrello getOppureCreaCarrello(int idUtente) {
         return carrelloRepository.findByUtente_Id(idUtente).orElseGet(() -> {
             Utente utente = utenteRepository.findById(idUtente)
                     .orElseThrow(() -> new UtenteNonTrovatoException("Utente con id " + idUtente + " non trovato"));

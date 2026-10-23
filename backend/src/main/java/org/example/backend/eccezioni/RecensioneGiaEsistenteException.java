@@ -6,8 +6,4 @@ public class RecensioneGiaEsistenteException extends RuntimeException {
     public RecensioneGiaEsistenteException() {
         super("Hai gia' recensito questo prodotto");
     }
-
-    public RecensioneGiaEsistenteException(String messaggio) {
-        super(messaggio);
-    }
 }

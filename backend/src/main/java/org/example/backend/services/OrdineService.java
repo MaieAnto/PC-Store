@@ -12,7 +12,6 @@ import org.example.backend.repositories.OrdineRepository;
 import org.example.backend.repositories.UtenteRepository;
 import org.example.backend.eccezioni.CarrelloVuotoException;
 import org.example.backend.eccezioni.OperazioneNonConsentitaException;
-import org.example.backend.eccezioni.OrdineNonTrovatoException;
 import org.example.backend.eccezioni.QuantitaNonDisponibileException;
 import org.example.backend.eccezioni.UtenteNonTrovatoException;
 import org.springframework.stereotype.Service;
@@ -78,11 +77,6 @@ public class OrdineService {
         carrelloRepository.save(carrello);
 
         return ordineSalvato;
-    }
-
-    public Ordine trovaPerId(int id) {
-        return ordineRepository.findById(id)
-                .orElseThrow(() -> new OrdineNonTrovatoException("Ordine con id " + id + " non trovato"));
     }
 
     /* Storico degli ordini di un cliente, dal piu' recente al piu' vecchio. */

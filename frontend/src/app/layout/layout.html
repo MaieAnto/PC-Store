@@ -1,0 +1,57 @@
+<div class="layout" [class.menu-aperto]="menuAperto()">
+
+  <header class="topbar">
+    <button mat-icon-button type="button" (click)="toggleMenu()" aria-label="Apri menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <a class="marchio" routerLink="/catalogo">PC<span>//</span>STORE</a>
+  </header>
+
+  <div class="overlay" (click)="chiudiMenu()"></div>
+
+  <aside class="sidebar">
+    <a class="marchio marchio-side" routerLink="/catalogo">PC<span>//</span>STORE</a>
+
+    <nav class="nav">
+      @if (eFornitore()) {
+        <a routerLink="/fornitore" routerLinkActive="attivo"><mat-icon>dashboard</mat-icon> Dashboard</a>
+        <a routerLink="/aggiungi-prodotto" routerLinkActive="attivo"><mat-icon>add_box</mat-icon> Aggiungi prodotto</a>
+        <a routerLink="/gestione-prodotti" routerLinkActive="attivo"><mat-icon>inventory_2</mat-icon> Gestione prodotti</a>
+        <a routerLink="/rifornimento" routerLinkActive="attivo"><mat-icon>add_shopping_cart</mat-icon> Nuovo rifornimento</a>
+        <a routerLink="/rifornimenti" routerLinkActive="attivo"><mat-icon>history</mat-icon> Storico rifornimenti</a>
+      } @else {
+        <a routerLink="/catalogo" routerLinkActive="attivo"><mat-icon>grid_view</mat-icon> Catalogo</a>
+        @if (eCliente()) {
+          <a routerLink="/carrello" routerLinkActive="attivo" class="con-badge">
+            <mat-icon>shopping_cart</mat-icon> Carrello
+            @if (numeroCarrello() > 0) {
+              <span class="badge">{{ numeroCarrello() }}</span>
+            }
+          </a>
+          <a routerLink="/ordini" routerLinkActive="attivo"><mat-icon>receipt_long</mat-icon> I miei ordini</a>
+        }
+      }
+    </nav>
+
+    <div class="spazio"></div>
+
+    @if (utente(); as u) {
+      <div class="utente">
+        <div class="avatar">{{ u.nome.charAt(0) }}{{ u.cognome.charAt(0) }}</div>
+        <div class="chi">
+          <span class="nome">{{ u.nome }} {{ u.cognome }}</span>
+          <span class="ruolo">{{ u.ruolo }}</span>
+        </div>
+      </div>
+      <button mat-stroked-button type="button" class="btn-esci" (click)="logout()">
+        <mat-icon>logout</mat-icon> Esci
+      </button>
+    } @else {
+      <a mat-flat-button color="primary" routerLink="/login" class="btn-accedi">Accedi</a>
+    }
+  </aside>
+
+  <main class="contenuto">
+    <router-outlet />
+  </main>
+</div>

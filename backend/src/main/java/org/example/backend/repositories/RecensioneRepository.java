@@ -9,11 +9,7 @@ import java.util.List;
 
 public interface RecensioneRepository extends JpaRepository<Recensione, Integer> {
 
-    List<Recensione> findByProdotto(Prodotto prodotto);
-
     List<Recensione> findByProdotto_IdOrderByDataRecensioneDesc(int idProdotto);
-
-    List<Recensione> findByAutore(Utente autore);
 
     boolean existsByAutoreAndProdotto(Utente autore, Prodotto prodotto);
 }

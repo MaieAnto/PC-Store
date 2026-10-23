@@ -4,7 +4,6 @@ import org.example.backend.eccezioni.CarrelloVuotoException;
 import org.example.backend.eccezioni.CredenzialiNonValideException;
 import org.example.backend.eccezioni.EmailGiaRegistrataException;
 import org.example.backend.eccezioni.OperazioneNonConsentitaException;
-import org.example.backend.eccezioni.OrdineNonTrovatoException;
 import org.example.backend.eccezioni.ProdottoNonTrovatoException;
 import org.example.backend.eccezioni.QuantitaNonDisponibileException;
 import org.example.backend.eccezioni.RecensioneGiaEsistenteException;
@@ -23,7 +22,7 @@ public class GestoreEccezioni {
         return risposta(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
-    @ExceptionHandler({UtenteNonTrovatoException.class, ProdottoNonTrovatoException.class, OrdineNonTrovatoException.class})
+    @ExceptionHandler({UtenteNonTrovatoException.class, ProdottoNonTrovatoException.class})
     public ResponseEntity<ResponseMessage> nonTrovato(RuntimeException e) {
         return risposta(HttpStatus.NOT_FOUND, e.getMessage());
     }

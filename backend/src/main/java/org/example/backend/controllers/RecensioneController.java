@@ -3,8 +3,10 @@ package org.example.backend.controllers;
 import org.example.backend.dto.RecensioneRequest;
 import org.example.backend.entities.Recensione;
 import org.example.backend.services.RecensioneService;
+import org.example.backend.services.UtenteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,18 +16,22 @@ import java.util.List;
 public class RecensioneController {
 
     private final RecensioneService recensioneService;
+    private final UtenteService utenteService;
 
-    public RecensioneController(RecensioneService recensioneService) {
+    public RecensioneController(RecensioneService recensioneService, UtenteService utenteService) {
         this.recensioneService = recensioneService;
+        this.utenteService = utenteService;
     }
 
     // Aggiunge una recensione
     // Consentito solo se l'utente ha acquistato il prodotto, una sola per coppia utente-prodotto
-    // Dati nel corpo JSON: { idAutore, idProdotto, valutazione, commento }
+    // L'autore e' l'utente loggato (preso dal token), non un id passato dal client
+    // Dati nel corpo JSON: { idProdotto, valutazione, commento }
     @PostMapping
-    public ResponseEntity<Recensione> aggiungiRecensione(@RequestBody RecensioneRequest richiesta) {
+    public ResponseEntity<Recensione> aggiungiRecensione(Authentication auth, @RequestBody RecensioneRequest richiesta) {
+        int idAutore = utenteService.trovaPerEmail(auth.getName()).getId();
         Recensione recensione = recensioneService.aggiungiRecensione(
-                richiesta.getIdAutore(), richiesta.getIdProdotto(), richiesta.getValutazione(), richiesta.getCommento());
+                idAutore, richiesta.getIdProdotto(), richiesta.getValutazione(), richiesta.getCommento());
         return new ResponseEntity<>(recensione, HttpStatus.CREATED);
     }
 
@@ -39,11 +45,5 @@ public class RecensioneController {
     @GetMapping("/prodotto/{idProdotto}/media")
     public double mediaValutazioni(@PathVariable int idProdotto) {
         return recensioneService.mediaValutazioni(idProdotto);
-    }
-
-    // Recensioni scritte da un utente
-    @GetMapping("/utente/{idAutore}")
-    public List<Recensione> recensioniUtente(@PathVariable int idAutore) {
-        return recensioneService.recensioniUtente(idAutore);
     }
 }

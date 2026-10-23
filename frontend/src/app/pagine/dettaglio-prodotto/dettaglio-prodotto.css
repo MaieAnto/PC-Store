@@ -1,4 +1,3 @@
-/* Stile della card di dettaglio prodotto. */
 .pagina-dettaglio {
   max-width: 920px;
   margin: 0 auto;
@@ -18,7 +17,6 @@
   margin: 1rem 0;
 }
 
-/* --- Testata: immagine + info --- */
 mat-card.testata {
   display: grid;
   grid-template-columns: 300px 1fr;
@@ -83,7 +81,6 @@ mat-card.testata {
   -webkit-text-fill-color: transparent;
 }
 
-/* Selettore quantità + aggiungi */
 .acquisto {
   display: flex;
   align-items: center;
@@ -108,7 +105,6 @@ mat-card.testata {
   margin-top: 0.6rem;
 }
 
-/* --- Sezioni dettagli / recensioni --- */
 mat-card.sezione {
   margin-top: 1.25rem;
   padding: 1.25rem 1.4rem;
@@ -125,7 +121,6 @@ mat-card.sezione h2 {
   line-height: 1.6;
 }
 
-/* Form recensione */
 .form-recensione {
   margin-bottom: 1.25rem;
   padding-bottom: 1.25rem;
@@ -159,7 +154,6 @@ mat-card.sezione h2 {
   height: 20px;
 }
 
-/* Media + elenco recensioni */
 .media {
   display: flex;
   align-items: center;

@@ -66,13 +66,6 @@ public class RecensioneService {
         return recensioneRepository.findByProdotto_IdOrderByDataRecensioneDesc(idProdotto);
     }
 
-    /* Recensioni scritte da un utente. */
-    public List<Recensione> recensioniUtente(int idAutore) {
-        Utente autore = utenteRepository.findById(idAutore)
-                .orElseThrow(() -> new UtenteNonTrovatoException("Utente con id " + idAutore + " non trovato"));
-        return recensioneRepository.findByAutore(autore);
-    }
-
     /* Media delle valutazioni di un prodotto */
     public double mediaValutazioni(int idProdotto) {
         List<Recensione> recensioni = recensioneRepository.findByProdotto_IdOrderByDataRecensioneDesc(idProdotto);

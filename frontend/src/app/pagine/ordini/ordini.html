@@ -1,4 +1,3 @@
-<!-- Schermata "I miei ordini" (Angular Material, pannelli espandibili). -->
 <div class="pagina-ordini">
 
   <header class="intestazione">
@@ -6,17 +5,14 @@
     <p class="sottotitolo">Lo storico dei tuoi acquisti</p>
   </header>
 
-  <!-- Stato: caricamento -->
   @if (caricamento()) {
     <div class="stato-centrato"><mat-spinner diameter="40" /></div>
   }
 
-  <!-- Stato: errore -->
   @if (errore()) {
     <div class="errore-generale">{{ errore() }}</div>
   }
 
-  <!-- Contenuto -->
   @if (!caricamento() && !errore()) {
     @if (ordini().length === 0) {
       <div class="vuoto">

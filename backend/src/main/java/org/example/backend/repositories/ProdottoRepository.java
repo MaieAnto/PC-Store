@@ -19,8 +19,8 @@ public interface ProdottoRepository extends JpaRepository<Prodotto, Integer> {
             + "AND (:prezzoMin IS NULL OR p.prezzo >= :prezzoMin) "
             + "AND (:prezzoMax IS NULL OR p.prezzo <= :prezzoMax)")
     Page<Prodotto> cercaCatalogo(@Param("nome") String nome, @Param("marca") String marca,
-                                 @Param("categoria") Categoria categoria, @Param("prezzoMin") Float prezzoMin,
-                                 @Param("prezzoMax") Float prezzoMax, Pageable pageable);
+                                 @Param("categoria") Categoria categoria, @Param("prezzoMin") Double prezzoMin,
+                                 @Param("prezzoMax") Double prezzoMax, Pageable pageable);
 
     // Le ricerche del catalogo considerano solo i prodotti in vendita (disponibile = true)
     List<Prodotto> findByDisponibileTrue();

@@ -57,6 +57,10 @@ public class RifornimentoService {
                 throw new OperazioneNonConsentitaException("La quantita' di rifornimento deve essere maggiore di zero");
             }
 
+            if (riga.getCostoUnitario() < 0) {
+                throw new OperazioneNonConsentitaException("Il costo unitario non puo' essere negativo");
+            }
+
             Prodotto prodotto = prodottoRepository.findById(riga.getIdProdotto())
                     .orElseThrow(() -> new ProdottoNonTrovatoException(
                             "Prodotto con id " + riga.getIdProdotto() + " non trovato"));

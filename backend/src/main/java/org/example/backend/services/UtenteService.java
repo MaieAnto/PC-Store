@@ -44,9 +44,6 @@ public class UtenteService {
         return utente;
     }
 
-    /* Recupera l'utente a partire dalla sua email (quella salvata nel token JWT).
-       Serve ai controller per sapere "chi e'" l'utente loggato senza fidarsi
-       dell'id passato nell'URL. */
     public Utente trovaPerEmail(String email) {
         return utenteRepository.findByEmail(email).orElseThrow(CredenzialiNonValideException::new);
     }

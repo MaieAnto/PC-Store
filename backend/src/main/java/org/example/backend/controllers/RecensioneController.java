@@ -23,10 +23,7 @@ public class RecensioneController {
         this.utenteService = utenteService;
     }
 
-    // Aggiunge una recensione
-    // Consentito solo se l'utente ha acquistato il prodotto, una sola per coppia utente-prodotto
-    // L'autore e' l'utente loggato (preso dal token), non un id passato dal client
-    // Dati nel corpo JSON: { idProdotto, valutazione, commento }
+    // Aggiunge una recensione solo se l'utente ha acquistato il prodotto, una sola per coppia utente-prodotto
     @PostMapping
     public ResponseEntity<Recensione> aggiungiRecensione(Authentication auth, @RequestBody RecensioneRequest richiesta) {
         int idAutore = utenteService.trovaPerEmail(auth.getName()).getId();

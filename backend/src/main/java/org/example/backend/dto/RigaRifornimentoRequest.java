@@ -9,5 +9,5 @@ public class RigaRifornimentoRequest {
 
     private int idProdotto;
     private int quantita;
-    private float costoUnitario;
+    private double costoUnitario;
 }

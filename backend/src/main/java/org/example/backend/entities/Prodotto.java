@@ -28,7 +28,7 @@ public class Prodotto {
     private String marca;
 
     @Column(name = "prezzo", nullable = false)
-    private float prezzo;
+    private double prezzo;
 
     @Column(name = "quantita", nullable = false)
     private int quantita;

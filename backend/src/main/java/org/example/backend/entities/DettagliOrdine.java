@@ -33,5 +33,5 @@ public class DettagliOrdine {
     private int quantita;
 
     @Column(name = "prezzo_unitario", nullable = false)
-    private float prezzoUnitario;
+    private double prezzoUnitario;
 }

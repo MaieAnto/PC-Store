@@ -1,0 +1,92 @@
+<div class="pagina-aggiungi">
+  <mat-card class="riquadro" appearance="outlined">
+    <div class="intestazione">
+      <h1>Aggiungi prodotto</h1>
+      <p class="sottotitolo">Inserisci un nuovo prodotto nel catalogo</p>
+    </div>
+
+    <form class="modulo" [formGroup]="form" (ngSubmit)="invia()">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Categoria</mat-label>
+        <mat-select formControlName="categoria" (selectionChange)="cambiaCategoria($event.value)">
+          @for (categoria of categorie; track categoria.endpoint) {
+            <mat-option [value]="categoria.endpoint">{{ categoria.etichetta }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nome</mat-label>
+        <input matInput formControlName="nome" placeholder="Es. Ryzen 5 5600X" />
+        @if (inviato() && form.controls['nome'].hasError('required')) {
+          <mat-error>Il nome è obbligatorio.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Marca</mat-label>
+        <input matInput formControlName="marca" placeholder="Es. AMD" />
+        @if (inviato() && form.controls['marca'].hasError('required')) {
+          <mat-error>La marca è obbligatoria.</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="riga-doppia">
+        <mat-form-field appearance="outline">
+          <mat-label>Prezzo</mat-label>
+          <input matInput type="number" formControlName="prezzo" placeholder="199.99" />
+          <span matTextSuffix>€</span>
+          @if (inviato() && form.controls['prezzo'].hasError('required')) {
+            <mat-error>Il prezzo è obbligatorio.</mat-error>
+          } @else if (inviato() && form.controls['prezzo'].invalid) {
+            <mat-error>Il prezzo non può essere negativo.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Quantità in magazzino</mat-label>
+          <input matInput type="number" formControlName="quantita" placeholder="10" />
+          @if (inviato() && form.controls['quantita'].hasError('required')) {
+            <mat-error>La quantità è obbligatoria.</mat-error>
+          } @else if (inviato() && form.controls['quantita'].invalid) {
+            <mat-error>La quantità non può essere negativa.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>URL immagine (facoltativo)</mat-label>
+        <input matInput formControlName="immagineUrl" placeholder="https://…" />
+        <mat-icon matSuffix>image</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Dettagli tecnici (facoltativi)</mat-label>
+        <textarea
+          matInput
+          rows="5"
+          formControlName="dettagli"
+          placeholder="Es. Socket AM5, 8 core / 16 thread, boost 4.7 GHz, TDP 65W…"
+        ></textarea>
+      </mat-form-field>
+
+      @if (errore()) {
+        <div class="errore-generale">{{ errore() }}</div>
+      }
+      @if (messaggioOk()) {
+        <div class="successo-generale">{{ messaggioOk() }}</div>
+      }
+
+      <button mat-flat-button color="primary" type="submit" class="btn-invia" [disabled]="caricamento()">
+        @if (caricamento()) {
+          <mat-spinner diameter="20" />
+          <span>Salvataggio in corso…</span>
+        } @else {
+          <mat-icon>add</mat-icon>
+          <span>Aggiungi prodotto</span>
+        }
+      </button>
+    </form>
+  </mat-card>
+</div>

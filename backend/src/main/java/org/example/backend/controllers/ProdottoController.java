@@ -1,5 +1,6 @@
 package org.example.backend.controllers;
 
+import org.example.backend.dto.NuovoProdotto;
 import org.example.backend.dto.PaginaProdotti;
 import org.example.backend.entities.Prodotto;
 import org.example.backend.services.ProdottoService;
@@ -28,8 +29,8 @@ public class ProdottoController {
 
     @GetMapping("/catalogo")
     public PaginaProdotti catalogo(@RequestParam(required = false) String nome, @RequestParam(required = false) String marca,
-                                   @RequestParam(required = false) String categoria, @RequestParam(required = false) Float min,
-                                   @RequestParam(required = false) Float max, @RequestParam(defaultValue = "0") int pagina,
+                                   @RequestParam(required = false) String categoria, @RequestParam(required = false) Double min,
+                                   @RequestParam(required = false) Double max, @RequestParam(defaultValue = "0") int pagina,
                                    @RequestParam(defaultValue = "12") int dimensione, @RequestParam(defaultValue = "nome") String ordinaPer,
                                    @RequestParam(defaultValue = "asc") String direzione) {
         return new PaginaProdotti(prodottoService.cercaCatalogoPaginato(nome, marca, categoria, min, max, pagina, dimensione, ordinaPer, direzione));
@@ -43,15 +44,14 @@ public class ProdottoController {
 
     // Inserimento di un nuovo prodotto
     @PostMapping
-    public ResponseEntity<Prodotto> aggiungi(@RequestBody Prodotto prodotto) {
-        return new ResponseEntity<>(prodottoService.aggiungiProdotto(prodotto), HttpStatus.CREATED);
+    public ResponseEntity<Prodotto> aggiungi(@RequestBody NuovoProdotto dati) {
+        return new ResponseEntity<>(prodottoService.aggiungiProdotto(dati), HttpStatus.CREATED);
     }
 
     // Modifica di un prodotto esistente
     @PutMapping("/{id}")
-    public Prodotto aggiorna(@PathVariable int id, @RequestBody Prodotto prodotto) {
-        prodotto.setId(id);
-        return prodottoService.aggiornaProdotto(prodotto);
+    public Prodotto aggiorna(@PathVariable int id, @RequestBody NuovoProdotto dati) {
+        return prodottoService.aggiornaProdotto(id, dati);
     }
 
     // Eliminazione di un prodotto dal catalogo ma resta nello storico

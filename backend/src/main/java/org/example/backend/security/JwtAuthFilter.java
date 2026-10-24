@@ -13,17 +13,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-/* Filtro che gira UNA volta per ogni richiesta HTTP
-
-    se la richiesta porta un token valido nell'header
-   "Authorization: Bearer <token>", riconosce l'utente e lo segna come
-   "autenticato" dentro Spring Security, indicando anche il suo RUOLO
-   (ROLE_CLIENTE / ROLE_FORNITORE). Da quel momento le regole in SecurityConfig
-   possono decidere se consentire o negare l'accesso.
-
-   Se il token manca o non e' valido non blocchiamo qui: lasciamo proseguire la
-   richiesta "non autenticata" e sara' SecurityConfig a rifiutarla se la risorsa
-   e' protetta. */
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 

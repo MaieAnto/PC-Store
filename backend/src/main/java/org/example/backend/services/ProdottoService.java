@@ -1,5 +1,6 @@
 package org.example.backend.services;
 
+import org.example.backend.dto.NuovoProdotto;
 import org.example.backend.entities.Categoria;
 import org.example.backend.entities.Prodotto;
 import org.example.backend.repositories.DettagliCarrelloRepository;
@@ -32,30 +33,60 @@ public class ProdottoService {
         this.dettagliCarrelloRepository = dettagliCarrelloRepository;
     }
 
-    /* Inserisce un nuovo prodotto */
+    /* Inserisce un nuovo prodotto (con controlli lato server) */
     @Transactional
-    public Prodotto aggiungiProdotto(Prodotto prodotto) {
-        prodotto.setId(0);
+    public Prodotto aggiungiProdotto(NuovoProdotto dati) {
+        validaDati(dati);
+
+        Prodotto prodotto = new Prodotto();
+        prodotto.setNome(dati.getNome());
+        prodotto.setCategoria(dati.getCategoria());
+        prodotto.setMarca(dati.getMarca());
+        prodotto.setPrezzo(dati.getPrezzo());
+        prodotto.setQuantita(dati.getQuantita());
+        prodotto.setImmagineUrl(dati.getImmagineUrl());
+        prodotto.setDettagli(dati.getDettagli());
         prodotto.setDisponibile(true);
         return prodottoRepository.save(prodotto);
     }
 
     /* Aggiorna un prodotto esistente */
     @Transactional
-    public Prodotto aggiornaProdotto(Prodotto datiProdotto) {
-        Prodotto esistente = prodottoRepository.findById(datiProdotto.getId())
-                .orElseThrow(() -> new ProdottoNonTrovatoException(
-                        "Prodotto con id " + datiProdotto.getId() + " non trovato"));
+    public Prodotto aggiornaProdotto(int id, NuovoProdotto dati) {
+        validaDati(dati);
 
-        esistente.setNome(datiProdotto.getNome());
-        esistente.setMarca(datiProdotto.getMarca());
-        esistente.setPrezzo(datiProdotto.getPrezzo());
-        esistente.setQuantita(datiProdotto.getQuantita());
-        esistente.setImmagineUrl(datiProdotto.getImmagineUrl());
-        esistente.setCategoria(datiProdotto.getCategoria());
-        esistente.setDettagli(datiProdotto.getDettagli());
+        Prodotto esistente = prodottoRepository.findById(id)
+                .orElseThrow(() -> new ProdottoNonTrovatoException(
+                        "Prodotto con id " + id + " non trovato"));
+
+        esistente.setNome(dati.getNome());
+        esistente.setMarca(dati.getMarca());
+        esistente.setPrezzo(dati.getPrezzo());
+        esistente.setQuantita(dati.getQuantita());
+        esistente.setImmagineUrl(dati.getImmagineUrl());
+        esistente.setCategoria(dati.getCategoria());
+        esistente.setDettagli(dati.getDettagli());
 
         return prodottoRepository.save(esistente);
+    }
+
+    /* Controlli di validita' comuni a inserimento e modifica */
+    private void validaDati(NuovoProdotto dati) {
+        if (dati.getNome() == null || dati.getNome().isBlank()) {
+            throw new OperazioneNonConsentitaException("Il nome e' obbligatorio");
+        }
+        if (dati.getMarca() == null || dati.getMarca().isBlank()) {
+            throw new OperazioneNonConsentitaException("La marca e' obbligatoria");
+        }
+        if (dati.getCategoria() == null) {
+            throw new OperazioneNonConsentitaException("La categoria e' obbligatoria");
+        }
+        if (dati.getPrezzo() < 0) {
+            throw new OperazioneNonConsentitaException("Il prezzo non puo' essere negativo");
+        }
+        if (dati.getQuantita() < 0) {
+            throw new OperazioneNonConsentitaException("La quantita' non puo' essere negativa");
+        }
     }
 
     /* "Elimina" un prodotto, resta nel database, ma il prodotto diventa non disponibile e non compare piu' nel catalogo */
@@ -93,7 +124,7 @@ public class ProdottoService {
     }
 
     public Page<Prodotto> cercaCatalogoPaginato(String nome, String marca, String categoria,
-                                                Float prezzoMin, Float prezzoMax, int pagina, int dimensione,
+                                                Double prezzoMin, Double prezzoMax, int pagina, int dimensione,
                                                 String ordinaPer, String direzione) {
         if (prezzoMin != null && prezzoMax != null && prezzoMin > prezzoMax) {
             throw new OperazioneNonConsentitaException("Il prezzo minimo non puo' essere maggiore del massimo");

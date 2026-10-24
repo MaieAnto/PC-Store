@@ -1,4 +1,3 @@
-/* Stile della schermata del Carrello. */
 .pagina-carrello {
   max-width: 860px;
   margin: 0 auto;
@@ -25,7 +24,6 @@
   margin: 1rem 0;
 }
 
-/* Carrello vuoto */
 mat-card.carrello-vuoto {
   text-align: center;
   padding: 2.5rem 1.5rem;
@@ -43,7 +41,6 @@ mat-card.carrello-vuoto {
   color: var(--testo-tenue);
 }
 
-/* Righe del carrello */
 .righe {
   display: flex;
   flex-direction: column;
@@ -123,7 +120,6 @@ mat-card.riga {
   font-variant-numeric: tabular-nums;
 }
 
-/* Riepilogo */
 mat-card.riepilogo {
   margin-top: 1.25rem;
   padding: 1rem 1.25rem;
@@ -159,7 +155,6 @@ mat-card.riepilogo {
   flex-wrap: wrap;
 }
 
-/* Conferma ordine */
 mat-card.conferma-ordine {
   margin-top: 1rem;
   padding: 1.1rem 1.25rem;
@@ -178,8 +173,6 @@ mat-card.conferma-ordine {
     grid-template-columns: 60px 1fr auto;
     row-gap: 8px;
   }
-  /* La descrizione occupa le due colonne a destra dell'immagine; quantità,
-     subtotale e rimozione vanno a capo sotto. */
   .descrizione {
     grid-column: 2 / -1;
   }

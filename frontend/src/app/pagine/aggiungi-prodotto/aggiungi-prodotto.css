@@ -1,0 +1,63 @@
+.pagina-aggiungi {
+  display: flex;
+  justify-content: center;
+  padding: 2.25rem 1.5rem 3.5rem;
+}
+
+mat-card.riquadro {
+  width: 100%;
+  max-width: 600px;
+  padding: 1.9rem 2rem;
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+  border-radius: var(--r-lg);
+  box-shadow: var(--ombra);
+}
+
+.intestazione {
+  margin-bottom: 1.2rem;
+}
+.intestazione h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+.sottotitolo {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+}
+
+.modulo {
+  display: flex;
+  flex-direction: column;
+}
+.modulo mat-form-field {
+  width: 100%;
+}
+
+.riga-doppia {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 0.8rem;
+}
+@media (max-width: 520px) {
+  .riga-doppia {
+    grid-template-columns: 1fr;
+  }
+}
+
+.errore-generale,
+.successo-generale {
+  margin: 0.25rem 0 0.6rem;
+}
+
+.btn-invia {
+  margin-top: 0.6rem;
+  height: 46px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.btn-invia mat-spinner {
+  display: inline-block;
+  margin-right: 0.6rem;
+  vertical-align: middle;
+}

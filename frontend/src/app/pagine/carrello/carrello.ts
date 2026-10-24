@@ -50,7 +50,7 @@ export class Carrello implements OnInit {
 
   aumenta(riga: RigaCarrello): void {
     if (riga.quantita >= riga.prodotto.quantita) {
-      return; // già al massimo disponibile
+      return;
     }
     this.impostaQuantita(riga, riga.quantita + 1);
   }

@@ -1,0 +1,118 @@
+<div class="pagina-dashboard">
+
+  <header class="intestazione">
+    <h1>Dashboard</h1>
+    @if (utente(); as u) {
+      <p class="sottotitolo">Ciao {{ u.nome }} — ecco lo stato del magazzino.</p>
+    }
+  </header>
+
+  @if (caricamento()) {
+    <div class="stato-centrato"><mat-spinner diameter="40" /></div>
+  }
+
+  @if (errore()) {
+    <div class="errore-generale">{{ errore() }}</div>
+  }
+
+  @if (!caricamento()) {
+    <section class="statistiche">
+      <div class="tile">
+        <span class="campo-label">A catalogo</span>
+        <span class="valore dato">{{ numProdotti() }}</span>
+        <mat-icon class="ico">inventory_2</mat-icon>
+      </div>
+      <div class="tile" [class.allerta]="numEsauriti() > 0">
+        <span class="campo-label">Esauriti</span>
+        <span class="valore dato">{{ numEsauriti() }}</span>
+        <mat-icon class="ico">production_quantity_limits</mat-icon>
+      </div>
+      <div class="tile">
+        <span class="campo-label">Eliminati</span>
+        <span class="valore dato">{{ numEliminati() }}</span>
+        <mat-icon class="ico">delete_outline</mat-icon>
+      </div>
+      <div class="tile tile-valore">
+        <span class="campo-label">Valore magazzino</span>
+        <span class="valore dato">{{ valoreMagazzino().toFixed(2) }} €</span>
+        <mat-icon class="ico">euro</mat-icon>
+      </div>
+    </section>
+    <section class="azioni-rapide">
+      <a mat-flat-button color="primary" routerLink="/aggiungi-prodotto">
+        <mat-icon>add_box</mat-icon> Aggiungi prodotto
+      </a>
+      <a mat-stroked-button routerLink="/rifornimento">
+        <mat-icon>add_shopping_cart</mat-icon> Nuovo rifornimento
+      </a>
+      <a mat-stroked-button routerLink="/gestione-prodotti">
+        <mat-icon>inventory_2</mat-icon> Gestione prodotti
+      </a>
+      <a mat-stroked-button routerLink="/rifornimenti">
+        <mat-icon>history</mat-icon> Storico
+      </a>
+    </section>
+
+    <div class="pannelli">
+      <mat-card class="pannello" appearance="outlined">
+        <div class="pannello-testa">
+          <h2>Da rifornire</h2>
+          <span class="campo-label">scorta ≤ {{ SOGLIA_SCORTA }}</span>
+        </div>
+
+        @if (daRifornire().length === 0) {
+          <p class="vuoto"><mat-icon>check_circle</mat-icon> Tutte le scorte sono a posto.</p>
+        } @else {
+          <table class="tabella">
+            <tbody>
+              @for (p of daRifornire(); track p.id) {
+                <tr>
+                  <td class="nome-prod">
+                    <a [routerLink]="['/prodotto', p.id]">{{ p.nome }}</a>
+                    <span class="categoria-badge">{{ p.categoria }}</span>
+                  </td>
+                  <td class="num">
+                    @if (p.quantita === 0) {
+                      <span class="disponibilita esaurito">Esaurito</span>
+                    } @else {
+                      <span class="giacenza dato">{{ p.quantita }} pz</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+          <a mat-flat-button color="primary" routerLink="/rifornimento" class="btn-pannello">
+            <mat-icon>add_shopping_cart</mat-icon> Rifornisci ora
+          </a>
+        }
+      </mat-card>
+      <mat-card class="pannello" appearance="outlined">
+        <div class="pannello-testa">
+          <h2>Ultimi rifornimenti</h2>
+          <a routerLink="/rifornimenti" class="vedi-tutti">Vedi tutti</a>
+        </div>
+
+        @if (rifornimentiRecenti().length === 0) {
+          <p class="vuoto"><mat-icon>history</mat-icon> Nessun rifornimento registrato.</p>
+        } @else {
+          <ul class="lista">
+            @for (r of rifornimentiRecenti(); track r.id) {
+              <li>
+                <div class="riga-rif">
+                  <span class="rif-id">Rifornimento #{{ r.id }}</span>
+                  <span class="rif-costo dato">{{ costoTotale(r).toFixed(2) }} €</span>
+                </div>
+                <div class="riga-meta">
+                  <span class="data">{{ dataLeggibile(r.dataRifornimento) }}</span>
+                  <span class="pezzi dato">{{ numeroPezzi(r) }} pz</span>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </mat-card>
+    </div>
+  }
+
+</div>

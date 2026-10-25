@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { DatiRegistrazione, RispostaLogin, Utente } from '../modelli/utente';
+import { DatiRegistrazione, RispostaLogin, Utente } from '../models/utente';
 
 @Injectable({ providedIn: 'root' })
 export class AutenticazioneService {
@@ -12,6 +12,7 @@ export class AutenticazioneService {
   readonly utenteCorrente = signal<Utente | null>(this.leggiSessione());
   constructor(private readonly http: HttpClient) {}
 
+  // Effettua il login: salva token e utente e restituisce l'utente.
   login(email: string, password: string): Observable<Utente> {
     return this.http.post<RispostaLogin>(`${this.urlBase}/login`, { email, password }).pipe(
       // Salvo token e utente, poi cambio la risposta nel solo utente
@@ -23,6 +24,7 @@ export class AutenticazioneService {
     );
   }
 
+  // Restituisce il token salvato nella sessione (o null).
   getToken(): string | null {
     try {
       return sessionStorage.getItem(this.chiaveToken);

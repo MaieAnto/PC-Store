@@ -1,0 +1,117 @@
+.pagina-gestione {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 1.75rem 1.5rem 3.5rem;
+}
+
+.intestazione h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+.sottotitolo {
+  margin: 4px 0 1.25rem;
+}
+
+.successo-generale,
+.errore-generale {
+  margin: 10px 0;
+}
+
+.elenco {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+mat-card.prodotto {
+  padding: 0.9rem 1.1rem;
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+}
+mat-card.prodotto.eliminato {
+  opacity: 0.85;
+}
+
+.riga-prodotto {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.info .nome {
+  font-weight: 600;
+  font-size: 1.02rem;
+}
+.info .meta {
+  color: var(--testo-soft);
+  font-size: 0.88rem;
+}
+.azioni {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.conferma-elimina {
+  margin-top: 0.9rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--errore-bordo);
+  background: var(--errore-bg);
+  border-radius: var(--r-sm);
+}
+.conferma-elimina p {
+  margin: 0 0 0.6rem;
+  font-size: 0.92rem;
+}
+
+.form-modifica {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--bordo);
+}
+.campi {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 0.9rem;
+}
+.campi .campo-largo {
+  grid-column: 1 / -1;
+}
+.campi mat-form-field {
+  width: 100%;
+}
+.nota-giacenza {
+  align-self: center;
+  margin: 0 0 1.2rem;
+  color: var(--testo-soft);
+  font-size: 0.88rem;
+}
+.azioni-form {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 0.4rem;
+}
+
+.titolo-eliminati {
+  margin: 2rem 0 0.75rem;
+  font-size: 1.25rem;
+  color: var(--testo-soft);
+}
+
+@media (max-width: 560px) {
+  .campi {
+    grid-template-columns: 1fr;
+  }
+  .riga-prodotto {
+    align-items: flex-start;
+  }
+}

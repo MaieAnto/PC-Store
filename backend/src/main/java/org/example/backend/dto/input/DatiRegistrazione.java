@@ -1,4 +1,4 @@
-package org.example.backend.dto;
+package org.example.backend.dto.input;
 
 import org.example.backend.entities.Ruolo;
 import lombok.Getter;

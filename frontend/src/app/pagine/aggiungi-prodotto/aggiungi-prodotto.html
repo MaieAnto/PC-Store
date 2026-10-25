@@ -10,8 +10,8 @@
       <mat-form-field appearance="outline">
         <mat-label>Categoria</mat-label>
         <mat-select formControlName="categoria" (selectionChange)="cambiaCategoria($event.value)">
-          @for (categoria of categorie; track categoria.endpoint) {
-            <mat-option [value]="categoria.endpoint">{{ categoria.etichetta }}</mat-option>
+          @for (categoria of categorie; track categoria) {
+            <mat-option [value]="categoria">{{ categoria }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -81,11 +81,10 @@
       <button mat-flat-button color="primary" type="submit" class="btn-invia" [disabled]="caricamento()">
         @if (caricamento()) {
           <mat-spinner diameter="20" />
-          <span>Salvataggio in corso…</span>
         } @else {
           <mat-icon>add</mat-icon>
-          <span>Aggiungi prodotto</span>
         }
+        <span>{{ caricamento() ? 'Salvataggio in corso…' : 'Aggiungi prodotto' }}</span>
       </button>
     </form>
   </mat-card>

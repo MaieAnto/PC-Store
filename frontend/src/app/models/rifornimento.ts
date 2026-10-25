@@ -1,8 +1,5 @@
 /* Modello del rifornimento lato frontend. */
 
-import { Prodotto } from './prodotto';
-import { Utente } from './utente';
-
 export interface RigaRifornimentoRequest {
   idProdotto: number;
   quantita: number;
@@ -15,14 +12,17 @@ export interface RifornimentoRequest {
 
 export interface RigaRifornimento {
   id: number;
-  prodotto: Prodotto;
+  idProdotto: number;
+  nome: string;
+  marca: string | null;
   quantita: number;
   costoUnitario: number;
+  subtotale: number;
 }
 
 export interface Rifornimento {
   id: number;
   dataRifornimento: string | number;
-  fornitore?: Utente;
-  dettagli: RigaRifornimento[];
+  righe: RigaRifornimento[];
+  totaleCosto: number;
 }

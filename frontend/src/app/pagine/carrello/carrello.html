@@ -25,31 +25,31 @@
         @for (riga of righe(); track riga.id) {
           <mat-card class="riga" appearance="outlined">
             <div class="immagine">
-              @if (riga.prodotto.immagineUrl) {
-                <img [src]="riga.prodotto.immagineUrl" [alt]="riga.prodotto.nome" />
+              @if (riga.immagineUrl) {
+                <img [src]="riga.immagineUrl" [alt]="riga.nome" />
               } @else {
                 <span class="segnaposto-img"><mat-icon>image_not_supported</mat-icon></span>
               }
             </div>
             <div class="descrizione">
-              <span class="categoria-badge">{{ riga.prodotto.categoria }}</span>
-              <h2 class="nome">{{ riga.prodotto.nome }}</h2>
-              @if (riga.prodotto.marca) {
-                <p class="marca">{{ riga.prodotto.marca }}</p>
+              <span class="categoria-badge">{{ riga.categoria }}</span>
+              <h2 class="nome">{{ riga.nome }}</h2>
+              @if (riga.marca) {
+                <p class="marca">{{ riga.marca }}</p>
               }
-              <p class="prezzo-unitario">{{ riga.prodotto.prezzo.toFixed(2) }} € cad.</p>
+              <p class="prezzo-unitario">{{ riga.prezzo.toFixed(2) }} € cad.</p>
             </div>
             <div class="quantita">
               <button mat-icon-button type="button" [disabled]="riga.quantita <= 1" (click)="diminuisci(riga)" aria-label="Diminuisci">
                 <mat-icon>remove</mat-icon>
               </button>
               <span class="valore-quantita">{{ riga.quantita }}</span>
-              <button mat-icon-button type="button" [disabled]="riga.quantita >= riga.prodotto.quantita" (click)="aumenta(riga)" aria-label="Aumenta">
+              <button mat-icon-button type="button" [disabled]="riga.quantita >= riga.quantitaDisponibile" (click)="aumenta(riga)" aria-label="Aumenta">
                 <mat-icon>add</mat-icon>
               </button>
             </div>
             <div class="subtotale">
-              {{ (riga.prodotto.prezzo * riga.quantita).toFixed(2) }} €
+              {{ riga.subtotale.toFixed(2) }} €
             </div>
             <button mat-icon-button color="warn" type="button" (click)="rimuovi(riga)" aria-label="Rimuovi dal carrello">
               <mat-icon>delete</mat-icon>

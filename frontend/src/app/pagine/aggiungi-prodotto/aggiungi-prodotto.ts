@@ -7,7 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CATEGORIE, Categoria, NuovoProdotto } from '../../modelli/prodotto';
+import { CATEGORIE, NuovoProdotto } from '../../models/prodotto';
 import { ProdottoService } from '../../servizi/prodotto.service';
 
 @Component({
@@ -29,16 +29,15 @@ export class AggiungiProdotto {
   private readonly formBuilder = inject(FormBuilder);
   private readonly prodottoService = inject(ProdottoService);
 
-  protected readonly categorie: Categoria[] = CATEGORIE.filter((c) => c.endpoint !== null);
-  private readonly primoEndpoint = this.categorie[0].endpoint as string;
+  protected readonly categorie = CATEGORIE;
 
-  protected readonly inviato = signal(false);       // true dopo il primo tentativo di invio
-  protected readonly caricamento = signal(false);   // true mentre aspettiamo il backend
-  protected readonly errore = signal('');           // messaggio di errore ('' = nessuno)
-  protected readonly messaggioOk = signal('');      // messaggio di successo ('' = nessuno)
+  protected readonly inviato = signal(false);
+  protected readonly caricamento = signal(false);
+  protected readonly errore = signal('');
+  protected readonly messaggioOk = signal('');
 
   protected readonly form: FormGroup = this.formBuilder.group({
-    categoria: [this.primoEndpoint, Validators.required],
+    categoria: [CATEGORIE[0], Validators.required],
     nome: ['', Validators.required],
     marca: ['', Validators.required],
     prezzo: [null, [Validators.required, Validators.min(0)]],
@@ -47,11 +46,13 @@ export class AggiungiProdotto {
     dettagli: [''],
   });
 
-  cambiaCategoria(endpoint: string): void {
-    this.form.controls['categoria'].setValue(endpoint);
+  // Cambia la categoria selezionata nel form.
+  cambiaCategoria(categoria: string): void {
+    this.form.controls['categoria'].setValue(categoria);
     this.messaggioOk.set('');
   }
 
+  // Invia al backend il nuovo prodotto (valida il form e gestisce esito/errori).
   invia(): void {
     this.inviato.set(true);
     this.messaggioOk.set('');
@@ -64,14 +65,11 @@ export class AggiungiProdotto {
     this.caricamento.set(true);
 
     const v = this.form.getRawValue();
-    const endpoint: string = v.categoria;
-
-    const categoriaScelta = this.categorie.find((c) => c.endpoint === endpoint);
-    const etichettaCategoria = categoriaScelta ? categoriaScelta.etichetta : '';
+    const categoria: string = v.categoria;
 
     const prodotto: NuovoProdotto = {
       nome: v.nome,
-      categoria: etichettaCategoria,
+      categoria,
       marca: this.testoOppureNull(v.marca),
       prezzo: v.prezzo,
       quantita: v.quantita,
@@ -85,7 +83,7 @@ export class AggiungiProdotto {
         this.inviato.set(false);
         this.messaggioOk.set(`Prodotto "${creato.nome}" aggiunto con successo.`);
         this.form.reset();
-        this.form.controls['categoria'].setValue(endpoint);
+        this.form.controls['categoria'].setValue(categoria);
       },
       error: (risposta) => {
         this.caricamento.set(false);
@@ -97,6 +95,7 @@ export class AggiungiProdotto {
     });
   }
 
+  // Restituisce il testo ripulito, oppure null se vuoto.
   private testoOppureNull(testo: string | null): string | null {
     const pulito = (testo ?? '').trim();
     return pulito === '' ? null : pulito;

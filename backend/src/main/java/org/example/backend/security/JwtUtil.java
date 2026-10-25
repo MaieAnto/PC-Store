@@ -20,10 +20,12 @@ public class JwtUtil {
     @Value("${jwt.expiration-ms}")
     private long expirationMs;
 
+    // Chiave usata per firmare e verificare i token, derivata dal segreto configurato.
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
+    // Genera un token JWT con email, ruolo e scadenza.
     public String generateToken(String email, Ruolo ruolo) {
         Date ora = new Date();
         Date scadenza = new Date(ora.getTime() + expirationMs);

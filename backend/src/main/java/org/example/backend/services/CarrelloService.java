@@ -34,12 +34,10 @@ public class CarrelloService {
     }
 
     /* Restituisce il carrello dell'utente, se non esiste lo crea */
-    @Transactional
     private Carrello getOppureCreaCarrello(int idUtente) {
         return carrelloRepository.findByUtente_Id(idUtente).orElseGet(() -> {
             Utente utente = utenteRepository.findById(idUtente)
                     .orElseThrow(() -> new UtenteNonTrovatoException("Utente con id " + idUtente + " non trovato"));
-            // Il carrello esiste solo per i clienti: un fornitore non acquista.
             if (utente.getRuolo() != Ruolo.CLIENTE) {
                 throw new OperazioneNonConsentitaException("Solo un cliente puo' usare il carrello");
             }

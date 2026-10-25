@@ -1,0 +1,144 @@
+<div class="pagina-gestione">
+
+  <header class="intestazione">
+    <h1>Gestione prodotti</h1>
+    <p class="sottotitolo">Modifica o elimina i prodotti del catalogo</p>
+  </header>
+
+  @if (messaggio()) {
+    <div class="successo-generale">{{ messaggio() }}</div>
+  }
+  @if (errore()) {
+    <div class="errore-generale">{{ errore() }}</div>
+  }
+
+  @if (caricamento()) {
+    <p class="stato">Caricamento in corso…</p>
+  }
+
+  @if (!caricamento() && !errore()) {
+    @if (prodotti().length === 0) {
+      <p class="stato">Nessun prodotto a catalogo.</p>
+    } @else {
+      <div class="elenco">
+        @for (p of prodotti(); track p.id) {
+          <mat-card class="prodotto" appearance="outlined">
+            <div class="riga-prodotto">
+              <div class="info">
+                <span class="categoria-badge">{{ p.categoria }}</span>
+                <span class="nome">{{ p.nome }}</span>
+                <span class="meta">
+                  {{ p.marca || '—' }} · {{ p.prezzo.toFixed(2) }} € · giacenza {{ p.quantita }}
+                </span>
+              </div>
+              <div class="azioni">
+                <button mat-stroked-button type="button" (click)="modifica(p)">
+                  <mat-icon>edit</mat-icon> Modifica
+                </button>
+                <button mat-stroked-button color="warn" type="button" (click)="chiediElimina(p.id)">
+                  <mat-icon>delete</mat-icon> Elimina
+                </button>
+              </div>
+            </div>
+
+            @if (idInEliminazione() === p.id) {
+              <div class="conferma-elimina">
+                <p>Eliminare "{{ p.nome }}" dal catalogo? Resterà visibile negli ordini e nei rifornimenti già registrati.</p>
+                @if (erroreAzione()) { <div class="errore-generale">{{ erroreAzione() }}</div> }
+                <div class="azioni">
+                  <button mat-button type="button" (click)="annullaElimina()">Annulla</button>
+                  <button mat-flat-button color="warn" type="button" (click)="confermaElimina(p.id)">Sì, elimina</button>
+                </div>
+              </div>
+            }
+
+            @if (idInModifica() === p.id) {
+              <form class="form-modifica" [formGroup]="form" (ngSubmit)="salva()">
+                <div class="campi">
+                  <mat-form-field appearance="outline" class="campo-largo">
+                    <mat-label>Nome</mat-label>
+                    <input matInput formControlName="nome" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Categoria</mat-label>
+                    <mat-select formControlName="categoria">
+                      @for (c of categorie; track c) {
+                        <mat-option [value]="c">{{ c }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Marca</mat-label>
+                    <input matInput formControlName="marca" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Prezzo</mat-label>
+                    <input matInput type="number" min="0" step="0.01" formControlName="prezzo" />
+                    <span matTextSuffix>€</span>
+                  </mat-form-field>
+
+                  <p class="nota-giacenza">
+                    Giacenza: {{ p.quantita }} pz. Per aumentarla registra un rifornimento.
+                  </p>
+
+                  <mat-form-field appearance="outline" class="campo-largo">
+                    <mat-label>URL immagine</mat-label>
+                    <input matInput formControlName="immagineUrl" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="campo-largo">
+                    <mat-label>Dettagli</mat-label>
+                    <textarea matInput rows="4" formControlName="dettagli"
+                      placeholder="Es. Socket AM5, 8 core / 16 thread, boost 4.7 GHz, TDP 65W…"></textarea>
+                  </mat-form-field>
+                </div>
+
+                @if (erroreAzione()) {
+                  <div class="errore-generale">{{ erroreAzione() }}</div>
+                }
+
+                <div class="azioni-form">
+                  <button mat-button type="button" (click)="annullaModifica()">Annulla</button>
+                  <button mat-flat-button color="primary" type="submit" [disabled]="salvataggio()">
+                    @if (salvataggio()) { Salvataggio… } @else { Salva modifiche }
+                  </button>
+                </div>
+              </form>
+            }
+          </mat-card>
+        }
+      </div>
+    }
+  }
+
+  @if (eliminati().length > 0) {
+    <h2 class="titolo-eliminati">Prodotti eliminati</h2>
+    @if (erroreAzione() && idInModifica() === null && idInEliminazione() === null) {
+      <div class="errore-generale">{{ erroreAzione() }}</div>
+    }
+    <div class="elenco">
+      @for (p of eliminati(); track p.id) {
+        <mat-card class="prodotto eliminato" appearance="outlined">
+          <div class="riga-prodotto">
+            <div class="info">
+              <span class="categoria-badge">{{ p.categoria }}</span>
+              <span class="nome">{{ p.nome }}</span>
+              <span class="meta">
+                {{ p.marca || '—' }} · {{ p.prezzo.toFixed(2) }} € · giacenza {{ p.quantita }}
+              </span>
+            </div>
+            <div class="azioni">
+              <button mat-stroked-button color="primary" type="button" (click)="ripristina(p)">
+                <mat-icon>restore</mat-icon> Rimetti in vendita
+              </button>
+            </div>
+          </div>
+        </mat-card>
+      }
+    </div>
+  }
+
+</div>

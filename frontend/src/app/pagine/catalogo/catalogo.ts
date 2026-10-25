@@ -9,8 +9,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { ProdottoService } from '../../servizi/prodotto.service';
 import { CarrelloService } from '../../servizi/carrello.service';
 import { AutenticazioneService } from '../../servizi/autenticazione.service';
-import { CATEGORIE, FiltriCatalogo, Prodotto } from '../../modelli/prodotto';
-import { Ruolo } from '../../modelli/utente';
+import { CATEGORIE, FiltriCatalogo, Prodotto } from '../../models/prodotto';
+import { Ruolo } from '../../models/utente';
 
 @Component({
   selector: 'app-catalogo',
@@ -39,20 +39,20 @@ export class Catalogo implements OnInit {
 
   protected readonly DIMENSIONE_PAGINA = 12;
 
-  protected readonly prodotti = signal<Prodotto[]>([]); // i prodotti della SOLA pagina corrente
-  protected readonly totale = signal(0); // quanti prodotti in tutto rispettano i filtri
-  protected readonly pagina = signal(0); // indice della pagina corrente
-  protected readonly caricamento = signal(false); // true mentre aspettiamo il backend
-  protected readonly errore = signal(''); // messaggio di errore ('' = nessuno)
+  protected readonly prodotti = signal<Prodotto[]>([]);
+  protected readonly totale = signal(0);
+  protected readonly pagina = signal(0);
+  protected readonly caricamento = signal(false);
+  protected readonly errore = signal('');
 
-  protected readonly messaggioCarrello = signal(''); // breve conferma dopo un "aggiungi"
-  protected readonly idInAggiunta = signal<number | null>(null); // id del prodotto per cui e' in corso una chiamata
+  protected readonly messaggioCarrello = signal('');
+  protected readonly idInAggiunta = signal<number | null>(null);
 
-  protected readonly indiceCategoria = signal(0); // posizione nella lista CATEGORIE (0 = tutte)
-  protected readonly testoRicerca = signal(''); // testo cercato nel nome
-  protected readonly marcaFiltro = signal(''); // testo cercato nella marca
-  protected readonly prezzoMin = signal(''); // prezzo minimo
-  protected readonly prezzoMax = signal(''); // prezzo massimo
+  protected readonly categoriaScelta = signal('');
+  protected readonly testoRicerca = signal('');
+  protected readonly marcaFiltro = signal('');
+  protected readonly prezzoMin = signal('');
+  protected readonly prezzoMax = signal('');
 
   protected readonly ordinamento = signal('nome-asc');
 
@@ -70,14 +70,17 @@ export class Catalogo implements OnInit {
     this.carica();
   }
 
-  cambiaCategoria(indice: number): void {
-    this.indiceCategoria.set(indice);
+  // Seleziona una categoria dalla lista
+  cambiaCategoria(categoria: string): void {
+    this.categoriaScelta.set(categoria);
   }
 
+  // Cambia il criterio di ordinamento selezionato.
   cambiaOrdinamento(valore: string): void {
     this.ordinamento.set(valore);
   }
 
+  // Aggiorna il valore di uno dei campi di filtro
   aggiornaTesto(campo: 'nome' | 'marca' | 'min' | 'max', valore: string): void {
     if (campo === 'nome') this.testoRicerca.set(valore);
     else if (campo === 'marca') this.marcaFiltro.set(valore);
@@ -97,16 +100,18 @@ export class Catalogo implements OnInit {
     this.marcaFiltro.set('');
     this.prezzoMin.set('');
     this.prezzoMax.set('');
-    this.indiceCategoria.set(0);
+    this.categoriaScelta.set('');
     this.ordinamento.set('nome-asc');
     this.cerca();
   }
 
+  // Cambia pagina dal paginatore e ricarica i prodotti.
   cambiaPagina(evento: PageEvent): void {
     this.pagina.set(evento.pageIndex);
     this.carica();
   }
 
+  // Aggiunge un pezzo del prodotto al carrello
   aggiungiAlCarrello(prodotto: Prodotto): void {
     const utente = this.utente();
     if (!utente) {
@@ -146,13 +151,12 @@ export class Catalogo implements OnInit {
     this.caricamento.set(true);
     this.errore.set('');
 
-    const categoriaScelta = this.categorie[this.indiceCategoria()];
     const [ordinaPer, direzione] = this.ordinamento().split('-');
 
     const filtri: FiltriCatalogo = {
       nome: this.testoRicerca().trim() || undefined,
       marca: this.marcaFiltro().trim() || undefined,
-      categoria: categoriaScelta.endpoint === null ? undefined : categoriaScelta.etichetta,
+      categoria: this.categoriaScelta() || undefined,
       min: this.numeroOppureNull(this.prezzoMin()),
       max: this.numeroOppureNull(this.prezzoMax()),
       pagina: this.pagina(),

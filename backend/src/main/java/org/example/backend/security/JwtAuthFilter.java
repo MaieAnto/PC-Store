@@ -22,6 +22,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
     }
 
+    // Per ogni richiesta: se c'e' un token JWT valido, autentica l'utente nel contesto di sicurezza.
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {

@@ -133,13 +133,80 @@
         <ul class="lista-recensioni">
           @for (recensione of recensioni(); track recensione.id) {
             <li class="recensione">
-              <div class="riga-testata">
-                <span class="autore">{{ recensione.autore.nome }} {{ recensione.autore.cognome }}</span>
-                <span class="stelle">{{ stelle(recensione.valutazione) }}</span>
-                <span class="data">{{ dataLeggibile(recensione.dataRecensione) }}</span>
-              </div>
-              @if (recensione.commento) {
-                <p class="commento">{{ recensione.commento }}</p>
+              @if (recensioneInModifica() === recensione.id) {
+                <div class="form-recensione modifica">
+                  <p class="etichetta-form">Modifica la tua recensione</p>
+
+                  <div class="scelta-voto">
+                    @for (i of stelleVoto; track i) {
+                      <button
+                        mat-icon-button
+                        type="button"
+                        class="stella-voto"
+                        (click)="impostaVotoModifica(i)"
+                        [attr.aria-label]="i + ' stelle'"
+                      >
+                        <mat-icon>{{ votoModifica() >= i ? 'star' : 'star_border' }}</mat-icon>
+                      </button>
+                    }
+                  </div>
+
+                  <mat-form-field appearance="outline" class="commento-campo">
+                    <mat-label>Commento (facoltativo)</mat-label>
+                    <textarea
+                      matInput
+                      rows="3"
+                      #campoModifica
+                      [value]="commentoModifica()"
+                      (input)="commentoModifica.set(campoModifica.value)"
+                    ></textarea>
+                  </mat-form-field>
+
+                  @if (erroreModifica()) {
+                    <div class="errore-generale">{{ erroreModifica() }}</div>
+                  }
+
+                  <div class="azioni-modifica">
+                    <button mat-flat-button color="primary" type="button" [disabled]="salvataggioModifica()" (click)="salvaModifica(recensione.id)">
+                      @if (salvataggioModifica()) { Salvataggio… } @else { Salva }
+                    </button>
+                    <button mat-button type="button" [disabled]="salvataggioModifica()" (click)="annullaModifica()">
+                      Annulla
+                    </button>
+                  </div>
+                </div>
+              } @else {
+                <div class="riga-testata">
+                  <span class="autore">{{ recensione.autore }}</span>
+                  <span class="stelle">{{ stelle(recensione.valutazione) }}</span>
+                  <span class="data">{{ dataLeggibile(recensione.dataRecensione) }}</span>
+                </div>
+                @if (recensione.commento) {
+                  <p class="commento">{{ recensione.commento }}</p>
+                }
+
+                @if (eMia(recensione)) {
+                  @if (recensioneDaEliminare() === recensione.id) {
+                    <div class="conferma-elimina">
+                      <span>Eliminare questa recensione?</span>
+                      <button mat-button color="warn" type="button" [disabled]="eliminazioneInCorso()" (click)="confermaEliminazione(recensione.id)">
+                        @if (eliminazioneInCorso()) { Eliminazione… } @else { Sì, elimina }
+                      </button>
+                      <button mat-button type="button" [disabled]="eliminazioneInCorso()" (click)="annullaEliminazione()">
+                        Annulla
+                      </button>
+                    </div>
+                  } @else {
+                    <div class="azioni-recensione">
+                      <button mat-button type="button" (click)="iniziaModifica(recensione)">
+                        <mat-icon>edit</mat-icon> Modifica
+                      </button>
+                      <button mat-button color="warn" type="button" (click)="chiediEliminazione(recensione)">
+                        <mat-icon>delete</mat-icon> Elimina
+                      </button>
+                    </div>
+                  }
+                }
               }
             </li>
           }

@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AutenticazioneService } from '../servizi/autenticazione.service';
 import { CarrelloService } from '../servizi/carrello.service';
-import { Ruolo } from '../modelli/utente';
+import { Ruolo } from '../models/utente';
 
 @Component({
   selector: 'app-layout',
@@ -24,6 +24,7 @@ export class Layout implements OnInit {
   protected readonly numeroCarrello = this.carrelloService.numeroArticoli;
   protected readonly menuAperto = signal(false);
 
+  // All'avvio: se l'utente e' un cliente carica il carrello, e chiude il menu a ogni cambio pagina.
   ngOnInit(): void {
     const u = this.utente();
     if (u && u.ruolo === Ruolo.CLIENTE) {
@@ -37,6 +38,7 @@ export class Layout implements OnInit {
   toggleMenu(): void {
     this.menuAperto.update((v) => !v);
   }
+
   chiudiMenu(): void {
     this.menuAperto.set(false);
   }

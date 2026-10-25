@@ -1,0 +1,50 @@
+<div class="pagina-rifornimenti">
+
+  <header class="intestazione">
+    <h1>Storico rifornimenti</h1>
+    <p class="sottotitolo">I rifornimenti che hai registrato</p>
+  </header>
+
+  @if (caricamento()) {
+    <div class="stato-centrato"><mat-spinner diameter="40" /></div>
+  }
+
+  @if (errore()) {
+    <div class="errore-generale">{{ errore() }}</div>
+  }
+
+  @if (!caricamento() && !errore()) {
+    @if (rifornimenti().length === 0) {
+      <div class="vuoto">
+        <mat-icon>inventory_2</mat-icon>
+        <p>Non hai ancora registrato rifornimenti.</p>
+      </div>
+    } @else {
+      <mat-accordion class="elenco" multi>
+        @for (rif of rifornimenti(); track rif.id) {
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Rifornimento #{{ rif.id }}</mat-panel-title>
+              <mat-panel-description>
+                <span class="data">{{ dataLeggibile(rif.dataRifornimento) }}</span>
+                <span class="pezzi">{{ numeroPezzi(rif) }} pezzi</span>
+                <span class="totale">{{ costoTotale(rif).toFixed(2) }} €</span>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <div class="righe">
+              @for (riga of rif.righe; track riga.id) {
+                <div class="riga">
+                  <span class="nome-prodotto">{{ riga.nome }}</span>
+                  <span class="dettaglio-riga">{{ riga.quantita }} × {{ riga.costoUnitario.toFixed(2) }} €</span>
+                  <span class="subtotale-riga">{{ (riga.quantita * riga.costoUnitario).toFixed(2) }} €</span>
+                </div>
+              }
+            </div>
+          </mat-expansion-panel>
+        }
+      </mat-accordion>
+    }
+  }
+
+</div>

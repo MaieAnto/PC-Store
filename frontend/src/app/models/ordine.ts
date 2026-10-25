@@ -1,17 +1,19 @@
 /* Modello dell'ordine lato frontend. */
-import { Prodotto } from './prodotto';
-import { Utente } from './utente';
 
 export interface RigaOrdine {
   id: number;
-  prodotto: Prodotto;
+  idProdotto: number;
+  nome: string;
+  marca: string | null;
+  immagineUrl: string | null;
   quantita: number;
   prezzoUnitario: number;
+  subtotale: number;
 }
 
 export interface Ordine {
   id: number;
   dataOrdine: string | number;
-  acquirente?: Utente;
-  dettagli: RigaOrdine[];
+  righe: RigaOrdine[];
+  totale: number;
 }

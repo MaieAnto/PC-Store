@@ -1,17 +1,11 @@
-export interface Categoria {
-  etichetta: string;
-  endpoint: string | null;
-}
-
-export const CATEGORIE: Categoria[] = [
-  { etichetta: 'Tutte le categorie', endpoint: null },
-  { etichetta: 'CPU', endpoint: 'cpu' },
-  { etichetta: 'RAM', endpoint: 'ram' },
-  { etichetta: 'Schede video', endpoint: 'schede-video' },
-  { etichetta: 'Schede madri', endpoint: 'schede-madri' },
-  { etichetta: 'Archiviazione', endpoint: 'archiviazione' },
-  { etichetta: 'Alimentatori', endpoint: 'alimentatori' },
-  { etichetta: 'Case', endpoint: 'case' },
+export const CATEGORIE: string[] = [
+  'CPU',
+  'RAM',
+  'Schede video',
+  'Schede madri',
+  'Archiviazione',
+  'Alimentatori',
+  'Case',
 ];
 
 export interface Prodotto {

@@ -1,12 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { OrdineService } from '../../servizi/ordine.service';
-import { AutenticazioneService } from '../../servizi/autenticazione.service';
-import { Ordine } from '../../modelli/ordine';
+import { Ordine } from '../../models/ordine';
 
 @Component({
   selector: 'app-ordini',
@@ -16,30 +15,24 @@ import { Ordine } from '../../modelli/ordine';
 })
 export class Ordini implements OnInit {
   private readonly ordineService = inject(OrdineService);
-  private readonly autenticazioneService = inject(AutenticazioneService);
-  private readonly router = inject(Router);
 
-  protected readonly utente = this.autenticazioneService.utenteCorrente;
+  protected readonly ordini = signal<Ordine[]>([]);
+  protected readonly caricamento = signal(false);
+  protected readonly errore = signal('');
 
-  protected readonly ordini = signal<Ordine[]>([]);   // storico scaricato dal backend
-  protected readonly caricamento = signal(false);     // true mentre aspettiamo il backend
-  protected readonly errore = signal('');             // messaggio di errore ('' = nessuno)
-
+  // All'avvio carica lo storico ordini
   ngOnInit(): void {
-    const utente = this.utente();
-    if (!utente) {
-      this.router.navigate(['/login']);
-      return;
-    }
     this.carica();
   }
 
+  // Totale dell'ordine.
   totaleOrdine(ordine: Ordine): number {
-    return ordine.dettagli.reduce((somma, r) => somma + r.prezzoUnitario * r.quantita, 0);
+    return ordine.totale;
   }
 
+  // Numero totale di articoli in un ordine.
   numeroArticoli(ordine: Ordine): number {
-    return ordine.dettagli.reduce((somma, r) => somma + r.quantita, 0);
+    return ordine.righe.reduce((somma, r) => somma + r.quantita, 0);
   }
 
   dataLeggibile(valore: string | number): string {
@@ -47,6 +40,7 @@ export class Ordini implements OnInit {
     return Number.isNaN(data.getTime()) ? '' : data.toLocaleString('it-IT');
   }
 
+  // Scarica dal backend lo storico ordini dell'utente.
   private carica(): void {
     this.caricamento.set(true);
     this.errore.set('');

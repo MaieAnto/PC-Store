@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface CarrelloRepository extends JpaRepository<Carrello, Integer> {
 
+    // Trova il carrello appartenente a un utente dato il suo id.
     Optional<Carrello> findByUtente_Id(int idUtente);
 }

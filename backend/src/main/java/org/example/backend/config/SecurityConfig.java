@@ -30,7 +30,7 @@ public class SecurityConfig {
                         //login e registrazione pubblici
                         .requestMatchers(HttpMethod.POST, "/api/utenti/login", "/api/utenti/registrazione").permitAll()
 
-                        // L'elenco dei prodotti ELIMINATI e' solo per il fornitore:
+                        // elenco dei prodotti eliminati solo per il fornitore:
                         .requestMatchers(HttpMethod.GET, "/api/prodotti/eliminati").hasRole("FORNITORE")
                         // Catalogo navigabile anche senza login
                         .requestMatchers(HttpMethod.GET, "/api/prodotti", "/api/prodotti/**").permitAll()
@@ -46,6 +46,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/carrello/**").hasRole("CLIENTE")
                         .requestMatchers("/api/ordini/**").hasRole("CLIENTE")
                         .requestMatchers(HttpMethod.POST, "/api/recensioni").hasRole("CLIENTE")
+                        .requestMatchers(HttpMethod.PUT, "/api/recensioni/**").hasRole("CLIENTE")
+                        .requestMatchers(HttpMethod.DELETE, "/api/recensioni/**").hasRole("CLIENTE")
 
                         .anyRequest().authenticated()
                 )

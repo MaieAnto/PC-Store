@@ -1,6 +1,6 @@
 package org.example.backend.services;
 
-import org.example.backend.dto.NuovoProdotto;
+import org.example.backend.dto.input.NuovoProdotto;
 import org.example.backend.entities.Categoria;
 import org.example.backend.entities.Prodotto;
 import org.example.backend.repositories.DettagliCarrelloRepository;
@@ -33,7 +33,7 @@ public class ProdottoService {
         this.dettagliCarrelloRepository = dettagliCarrelloRepository;
     }
 
-    /* Inserisce un nuovo prodotto (con controlli lato server) */
+    /* Inserisce un nuovo prodotto */
     @Transactional
     public Prodotto aggiungiProdotto(NuovoProdotto dati) {
         validaDati(dati);
@@ -62,7 +62,6 @@ public class ProdottoService {
         esistente.setNome(dati.getNome());
         esistente.setMarca(dati.getMarca());
         esistente.setPrezzo(dati.getPrezzo());
-        esistente.setQuantita(dati.getQuantita());
         esistente.setImmagineUrl(dati.getImmagineUrl());
         esistente.setCategoria(dati.getCategoria());
         esistente.setDettagli(dati.getDettagli());
@@ -113,16 +112,18 @@ public class ProdottoService {
         return prodottoRepository.findByDisponibileFalse();
     }
 
+    /* Trova un prodotto per id o lancia un'eccezione se non esiste. */
     public Prodotto trovaPerId(int id) {
         return prodottoRepository.findById(id)
                 .orElseThrow(() -> new ProdottoNonTrovatoException("Prodotto con id " + id + " non trovato"));
     }
 
-    /* Catalogo */
+    /* Elenca tutti i prodotti in vendita (disponibile = true), senza paginazione  */
     public List<Prodotto> elencaTutti() {
         return prodottoRepository.findByDisponibileTrue();
     }
 
+    /* Ricerca paginata e ordinata nel catalogo, validando i parametri di prezzo. */
     public Page<Prodotto> cercaCatalogoPaginato(String nome, String marca, String categoria,
                                                 Double prezzoMin, Double prezzoMax, int pagina, int dimensione,
                                                 String ordinaPer, String direzione) {
@@ -136,12 +137,14 @@ public class ProdottoService {
                 prezzoMin, prezzoMax, pageable);
     }
 
+    /* Costruisce l'ordinamento ammesso */
     private Sort costruisciOrdinamento(String ordinaPer, String direzione) {
         String campo = (ordinaPer != null && ORDINAMENTI_AMMESSI.contains(ordinaPer)) ? ordinaPer : ORDINAMENTO_DEFAULT;
         Sort.Direction direzioneSort = "desc".equalsIgnoreCase(direzione) ? Sort.Direction.DESC : Sort.Direction.ASC;
         return Sort.by(direzioneSort, campo);
     }
 
+    /* Ripulisce una stringa di ricerca: trim e null se vuota. */
     private String normalizza(String testo) {
         if (testo == null) {
             return null;
@@ -150,9 +153,10 @@ public class ProdottoService {
         return pulito.isEmpty() ? null : pulito;
     }
 
+    /* Converte il testo in Categoria, oppure null se vuoto */
     private Categoria categoriaOppureNull(String categoria) {
         String pulito = normalizza(categoria);
-        if (pulito == null || "Tutte le categorie".equalsIgnoreCase(pulito)) {
+        if (pulito == null) {
             return null;
         }
         return Categoria.daTesto(pulito);

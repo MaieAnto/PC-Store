@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface ProdottoRepository extends JpaRepository<Prodotto, Integer> {
 
+    // Ricerca paginata nel catalogo con filtri opzionali, ogni filtro null viene ignorato.
     @Query("SELECT p FROM Prodotto p WHERE p.disponibile = true "
             + "AND (:nome IS NULL OR LOWER(p.nome) LIKE LOWER(CONCAT('%', :nome, '%'))) "
             + "AND (:marca IS NULL OR LOWER(p.marca) LIKE LOWER(CONCAT('%', :marca, '%'))) "
@@ -25,5 +26,6 @@ public interface ProdottoRepository extends JpaRepository<Prodotto, Integer> {
     // Le ricerche del catalogo considerano solo i prodotti in vendita (disponibile = true)
     List<Prodotto> findByDisponibileTrue();
 
+    // Prodotti "eliminati" (disponibile = false), mostrati solo al fornitore.
     List<Prodotto> findByDisponibileFalse();
 }

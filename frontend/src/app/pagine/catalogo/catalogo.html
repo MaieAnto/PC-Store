@@ -11,7 +11,6 @@
 
   <div class="layout">
 
-    <!-- Filtri -->
     <aside class="filtri">
       <h2 class="filtri-titolo">Filtri</h2>
 
@@ -23,9 +22,10 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Categoria</mat-label>
-        <mat-select [value]="indiceCategoria()" (selectionChange)="cambiaCategoria($event.value)">
-          @for (categoria of categorie; track categoria.etichetta) {
-            <mat-option [value]="$index">{{ categoria.etichetta }}</mat-option>
+        <mat-select [value]="categoriaScelta()" (selectionChange)="cambiaCategoria($event.value)">
+          <mat-option value="">Tutte le categorie</mat-option>
+          @for (categoria of categorie; track categoria) {
+            <mat-option [value]="categoria">{{ categoria }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -66,7 +66,6 @@
       </button>
     </aside>
 
-    <!-- Risultati -->
     <section class="risultati">
       @if (!caricamento() && !errore()) {
         <p class="conteggio"><span class="dato">{{ totale() }}</span> prodotti a catalogo</p>

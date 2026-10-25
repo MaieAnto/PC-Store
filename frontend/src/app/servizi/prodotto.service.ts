@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { FiltriCatalogo, NuovoProdotto, PaginaProdotti, Prodotto } from '../modelli/prodotto';
+import { FiltriCatalogo, NuovoProdotto, PaginaProdotti, Prodotto } from '../models/prodotto';
 
 
 @Injectable({ providedIn: 'root' })
@@ -11,10 +11,12 @@ export class ProdottoService {
 
   constructor(private readonly http: HttpClient) {}
 
+  // Elenca tutti i prodotti in vendita
   elencaTutti(): Observable<Prodotto[]> {
     return this.http.get<Prodotto[]>(this.urlBase);
   }
 
+  // Ricerca paginata nel catalogo con i filtri correnti.
   cercaCatalogo(filtri: FiltriCatalogo): Observable<PaginaProdotti> {
     let parametri = new HttpParams()
       .set('pagina', filtri.pagina)
@@ -51,8 +53,7 @@ export class ProdottoService {
     return this.http.post<Prodotto>(this.urlBase, prodotto);
   }
 
-  /*
-   * Modifica un prodotto esistente */
+  /* Modifica un prodotto esistente */
   aggiorna(id: number, prodotto: NuovoProdotto): Observable<Prodotto> {
     return this.http.put<Prodotto>(`${this.urlBase}/${id}`, prodotto);
   }
@@ -62,7 +63,7 @@ export class ProdottoService {
     return this.http.delete<{ messaggio: string }>(`${this.urlBase}/${id}`);
   }
 
-  /* Prodotti eliminati (non più in vendita)  */
+  /* Prodotti eliminati  */
   elencaEliminati(): Observable<Prodotto[]> {
     return this.http.get<Prodotto[]>(`${this.urlBase}/eliminati`);
   }

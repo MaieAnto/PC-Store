@@ -1,0 +1,124 @@
+<div class="pagina-rifornimento">
+
+  <header class="intestazione">
+    <h1>Nuovo rifornimento</h1>
+    <p class="sottotitolo">Aggiungi scorte ai prodotti esistenti</p>
+  </header>
+
+  @if (erroreProdotti()) {
+    <div class="errore-generale">{{ erroreProdotti() }}</div>
+  }
+
+  <mat-card class="aggiungi-riga" appearance="outlined">
+    <form class="riga-form" [formGroup]="formRiga" (ngSubmit)="salvaRiga()">
+      <mat-form-field appearance="outline" class="campo-prodotto">
+        <mat-label>Prodotto</mat-label>
+        <mat-select formControlName="idProdotto">
+          <mat-option value="">— scegli un prodotto —</mat-option>
+          @for (p of prodotti(); track p.id) {
+            <mat-option [value]="p.id + ''">{{ p.nome }} ({{ p.categoria }}) — giacenza {{ p.quantita }}</mat-option>
+          }
+        </mat-select>
+        @if (tentato() && formRiga.controls['idProdotto'].hasError('required')) {
+          <mat-error>Scegli un prodotto.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="campo-num">
+        <mat-label>Quantità</mat-label>
+        <input matInput type="number" min="1" step="1" formControlName="quantita" />
+        @if (tentato() && formRiga.controls['quantita'].hasError('required')) {
+          <mat-error>La quantità è obbligatoria.</mat-error>
+        } @else if (tentato() && formRiga.controls['quantita'].invalid) {
+          <mat-error>Deve essere almeno 1.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="campo-num">
+        <mat-label>Costo unitario</mat-label>
+        <input matInput type="number" min="0" step="0.01" formControlName="costoUnitario" />
+        <span matTextSuffix>€</span>
+        @if (tentato() && formRiga.controls['costoUnitario'].hasError('required')) {
+          <mat-error>Il costo è obbligatorio.</mat-error>
+        } @else if (tentato() && formRiga.controls['costoUnitario'].invalid) {
+          <mat-error>Non può essere negativo.</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="azioni-form">
+        <button mat-flat-button color="primary" type="submit" class="btn-aggiungi">
+          <mat-icon>{{ idInModifica() === null ? 'add' : 'save' }}</mat-icon>
+          <span>{{ idInModifica() === null ? 'Aggiungi riga' : 'Salva modifica' }}</span>
+        </button>
+        @if (idInModifica() !== null) {
+          <button mat-stroked-button type="button" class="btn-annulla" (click)="annulla()">Annulla</button>
+        }
+      </div>
+    </form>
+  </mat-card>
+
+  @if (erroreForm()) {
+    <div class="errore-form">{{ erroreForm() }}</div>
+  }
+
+  @if (righe().length === 0) {
+    <p class="stato">Nessuna riga. Aggiungi almeno un prodotto da rifornire.</p>
+  } @else {
+    <mat-card class="tabella-card" appearance="outlined">
+      <table class="tabella">
+        <thead>
+          <tr>
+            <th>Prodotto</th>
+            <th class="num">Quantità</th>
+            <th class="num">Costo unit.</th>
+            <th class="num">Subtotale</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of righe(); track r.idProdotto) {
+            <tr [class.in-modifica]="r.idProdotto === idInModifica()">
+              <td class="nome-prodotto">{{ r.nome }}</td>
+              <td class="num">{{ r.quantita }}</td>
+              <td class="num">{{ r.costoUnitario.toFixed(2) }} €</td>
+              <td class="num">{{ (r.quantita * r.costoUnitario).toFixed(2) }} €</td>
+              <td class="num azioni">
+                <button mat-icon-button type="button" (click)="modificaRiga(r)" aria-label="Modifica riga">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" type="button" (click)="rimuoviRiga(r.idProdotto)" aria-label="Rimuovi riga">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </mat-card>
+  }
+
+  <mat-card class="riepilogo" appearance="outlined">
+    <p class="totale">Costo totale: <strong>{{ totale().toFixed(2) }} €</strong></p>
+
+    @if (erroreInvio()) {
+      <div class="errore-generale">{{ erroreInvio() }}</div>
+    }
+
+    <button
+      mat-flat-button
+      color="primary"
+      type="button"
+      class="btn-primario"
+      [disabled]="righe().length === 0 || invio()"
+      (click)="registra()"
+    >
+      @if (invio()) {
+        <mat-spinner diameter="20" />
+      } @else {
+        <mat-icon>inventory</mat-icon>
+      }
+      <span>{{ invio() ? 'Invio in corso…' : 'Registra rifornimento' }}</span>
+    </button>
+  </mat-card>
+
+</div>

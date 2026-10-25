@@ -6,4 +6,8 @@ public class RecensioneNonConsentitaException extends RuntimeException {
     public RecensioneNonConsentitaException() {
         super("Puoi recensire solo i prodotti che hai acquistato");
     }
+
+    public RecensioneNonConsentitaException(String messaggio) {
+        super(messaggio);
+    }
 }

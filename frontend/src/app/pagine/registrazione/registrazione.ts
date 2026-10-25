@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AutenticazioneService } from '../../servizi/autenticazione.service';
-import { Ruolo } from '../../modelli/utente';
+import { Ruolo } from '../../models/utente';
 
 @Component({
   selector: 'app-registrazione',
@@ -31,11 +31,11 @@ export class Registrazione {
   private readonly formBuilder = inject(FormBuilder);
   private readonly autenticazioneService = inject(AutenticazioneService);
 
-  protected readonly errore = signal('');        // messaggio di errore
-  protected readonly caricamento = signal(false); // true durante la chiamata al backend
-  protected readonly completata = signal(false);  // true dopo una registrazione riuscita
-  protected readonly inviato = signal(false);     // true dopo il primo tentativo di invio
-  protected readonly nascondiPassword = signal(true); // true = password oscurata
+  protected readonly errore = signal('');
+  protected readonly caricamento = signal(false);
+  protected readonly completata = signal(false);
+  protected readonly inviato = signal(false);
+  protected readonly nascondiPassword = signal(true);
 
   protected readonly form = this.formBuilder.nonNullable.group({
     nome: ['', [Validators.required]],
@@ -50,6 +50,7 @@ export class Registrazione {
     this.nascondiPassword.update((nascosta) => !nascosta);
   }
 
+  // Invia il form di registrazione al backend (gestisce validazione, caricamento ed errori).
   invia(): void {
     this.inviato.set(true);
 

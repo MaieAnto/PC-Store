@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface RecensioneRepository extends JpaRepository<Recensione, Integer> {
 
+    // Recensioni di un prodotto, dalla piu' recente alla piu' vecchia.
     List<Recensione> findByProdotto_IdOrderByDataRecensioneDesc(int idProdotto);
 
+    // Verifica se un utente ha gia' recensito un prodotto
     boolean existsByAutoreAndProdotto(Utente autore, Prodotto prodotto);
 }

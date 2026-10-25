@@ -11,6 +11,7 @@ import org.example.backend.eccezioni.OperazioneNonConsentitaException;
 import org.example.backend.eccezioni.ProdottoNonTrovatoException;
 import org.example.backend.eccezioni.RecensioneGiaEsistenteException;
 import org.example.backend.eccezioni.RecensioneNonConsentitaException;
+import org.example.backend.eccezioni.RecensioneNonTrovataException;
 import org.example.backend.eccezioni.UtenteNonTrovatoException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,7 @@ public class RecensioneService {
         this.dettagliOrdineRepository = dettagliOrdineRepository;
     }
 
+    /* Aggiunge una recensione: solo se l'utente ha acquistato il prodotto e non l'ha gia' recensito. */
     @Transactional
     public Recensione aggiungiRecensione(int idAutore, int idProdotto, int valutazione, String commento) {
         if (valutazione < 1 || valutazione > 5) {
@@ -59,6 +61,40 @@ public class RecensioneService {
         recensione.setValutazione(valutazione);
         recensione.setCommento(commento);
         return recensioneRepository.save(recensione);
+    }
+
+    /* Modifica una recensione esistente. Consentito solo all'autore della recensione. */
+    @Transactional
+    public Recensione aggiornaRecensione(int idAutore, int idRecensione, int valutazione, String commento) {
+        if (valutazione < 1 || valutazione > 5) {
+            throw new OperazioneNonConsentitaException("La valutazione deve essere compresa tra 1 e 5");
+        }
+
+        Recensione recensione = recensioneRepository.findById(idRecensione)
+                .orElseThrow(() -> new RecensioneNonTrovataException(
+                        "Recensione con id " + idRecensione + " non trovata"));
+
+        if (recensione.getAutore().getId() != idAutore) {
+            throw new RecensioneNonConsentitaException("Puoi modificare solo le tue recensioni");
+        }
+
+        recensione.setValutazione(valutazione);
+        recensione.setCommento(commento);
+        return recensioneRepository.save(recensione);
+    }
+
+    /* Elimina una recensione. Consentito solo all'autore della recensione. */
+    @Transactional
+    public void eliminaRecensione(int idAutore, int idRecensione) {
+        Recensione recensione = recensioneRepository.findById(idRecensione)
+                .orElseThrow(() -> new RecensioneNonTrovataException(
+                        "Recensione con id " + idRecensione + " non trovata"));
+
+        if (recensione.getAutore().getId() != idAutore) {
+            throw new RecensioneNonConsentitaException("Puoi eliminare solo le tue recensioni");
+        }
+
+        recensioneRepository.delete(recensione);
     }
 
     /* Recensioni di un prodotto, dalla piu' recente alla piu' vecchia. */

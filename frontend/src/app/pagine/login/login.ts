@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AutenticazioneService } from '../../servizi/autenticazione.service';
-import { Ruolo } from '../../modelli/utente';
+import { Ruolo } from '../../models/utente';
 
 @Component({
   selector: 'app-login',
@@ -31,9 +31,9 @@ export class Login {
   private readonly autenticazioneService = inject(AutenticazioneService);
   private readonly router = inject(Router);
 
-  protected readonly errore = signal('');        // messaggio di errore ('' = nessuno)
-  protected readonly caricamento = signal(false); // true mentre aspettiamo il backend
-  protected readonly nascondiPassword = signal(true); // true = password oscurata (pallini)
+  protected readonly errore = signal('');
+  protected readonly caricamento = signal(false);
+  protected readonly nascondiPassword = signal(true);
 
   protected readonly form = this.formBuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],

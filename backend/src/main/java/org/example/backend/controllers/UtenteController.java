@@ -1,8 +1,9 @@
 package org.example.backend.controllers;
 
-import org.example.backend.dto.CredenzialiLogin;
-import org.example.backend.dto.DatiRegistrazione;
-import org.example.backend.dto.RispostaLogin;
+import org.example.backend.dto.input.CredenzialiLogin;
+import org.example.backend.dto.input.DatiRegistrazione;
+import org.example.backend.dto.output.RispostaLogin;
+import org.example.backend.dto.output.UtenteDTO;
 import org.example.backend.entities.Utente;
 import org.example.backend.security.JwtUtil;
 import org.example.backend.services.UtenteService;
@@ -24,8 +25,8 @@ public class UtenteController {
 
     // Registrazione
     @PostMapping("/registrazione")
-    public ResponseEntity<Utente> registra(@RequestBody DatiRegistrazione dati) {
-        return new ResponseEntity<>(utenteService.registra(dati), HttpStatus.CREATED);
+    public ResponseEntity<UtenteDTO> registra(@RequestBody DatiRegistrazione dati) {
+        return new ResponseEntity<>(new UtenteDTO(utenteService.registra(dati)), HttpStatus.CREATED);
     }
 
     // Login : verifica le credenziali e rilascia un token JWT con email e ruolo insieme ai dati dell'utente

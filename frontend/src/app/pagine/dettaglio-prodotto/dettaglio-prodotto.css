@@ -206,6 +206,37 @@ mat-card.sezione h2 {
   color: var(--testo-soft);
 }
 
+.azioni-recensione {
+  display: flex;
+  gap: 4px;
+  margin-top: 0.5rem;
+}
+.azioni-recensione mat-icon,
+.conferma-elimina mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-right: 2px;
+}
+.conferma-elimina {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--testo-soft);
+}
+.form-recensione.modifica {
+  margin: 0;
+  padding: 0;
+  border-bottom: none;
+}
+.azioni-modifica {
+  display: flex;
+  gap: 8px;
+}
+
 @media (max-width: 620px) {
   mat-card.testata {
     grid-template-columns: 1fr;

@@ -1,7 +1,7 @@
 package org.example.backend.services;
 
-import org.example.backend.dto.RifornimentoRequest;
-import org.example.backend.dto.RigaRifornimentoRequest;
+import org.example.backend.dto.input.RifornimentoRequest;
+import org.example.backend.dto.input.RigaRifornimentoRequest;
 import org.example.backend.entities.DettagliRifornimento;
 import org.example.backend.entities.Prodotto;
 import org.example.backend.entities.Rifornimento;

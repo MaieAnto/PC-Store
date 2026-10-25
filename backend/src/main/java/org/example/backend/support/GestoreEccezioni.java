@@ -8,9 +8,11 @@ import org.example.backend.eccezioni.ProdottoNonTrovatoException;
 import org.example.backend.eccezioni.QuantitaNonDisponibileException;
 import org.example.backend.eccezioni.RecensioneGiaEsistenteException;
 import org.example.backend.eccezioni.RecensioneNonConsentitaException;
+import org.example.backend.eccezioni.RecensioneNonTrovataException;
 import org.example.backend.eccezioni.UtenteNonTrovatoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -22,7 +24,8 @@ public class GestoreEccezioni {
         return risposta(HttpStatus.UNAUTHORIZED, e.getMessage());
     }
 
-    @ExceptionHandler({UtenteNonTrovatoException.class, ProdottoNonTrovatoException.class})
+    @ExceptionHandler({UtenteNonTrovatoException.class, ProdottoNonTrovatoException.class,
+            RecensioneNonTrovataException.class})
     public ResponseEntity<ResponseMessage> nonTrovato(RuntimeException e) {
         return risposta(HttpStatus.NOT_FOUND, e.getMessage());
     }
@@ -36,6 +39,12 @@ public class GestoreEccezioni {
     @ExceptionHandler(RecensioneNonConsentitaException.class)
     public ResponseEntity<ResponseMessage> recensioneNonConsentita(RecensioneNonConsentitaException e) {
         return risposta(HttpStatus.FORBIDDEN, e.getMessage());
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<ResponseMessage> conflittoConcorrenza(ObjectOptimisticLockingFailureException e) {
+        return risposta(HttpStatus.CONFLICT,
+                "Le scorte sono state aggiornate da un'altra operazione. Ricarica e riprova.");
     }
 
     @ExceptionHandler({OperazioneNonConsentitaException.class, IllegalArgumentException.class})

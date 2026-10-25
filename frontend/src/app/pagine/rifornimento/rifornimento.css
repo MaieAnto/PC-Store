@@ -1,0 +1,139 @@
+.pagina-rifornimento {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 1.75rem 1.5rem 3.5rem;
+}
+
+.intestazione h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+.sottotitolo {
+  margin: 4px 0 1.5rem;
+}
+
+.errore-generale {
+  margin: 12px 0;
+}
+.errore-form {
+  color: var(--errore);
+  margin: 8px 2px;
+  font-size: 0.9rem;
+}
+
+.aggiungi-riga {
+  padding: 1.1rem 1.1rem 0.3rem;
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+}
+.riga-form {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.campo-prodotto {
+  flex: 1;
+  min-width: 240px;
+}
+.campo-num {
+  width: 150px;
+}
+.azioni-form {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.btn-aggiungi,
+.btn-annulla {
+  height: 56px;
+}
+
+.tabella-card {
+  margin-top: 1.25rem;
+  padding: 0;
+  overflow: hidden;
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+}
+.tabella {
+  width: 100%;
+  border-collapse: collapse;
+}
+.tabella th,
+.tabella td {
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid var(--bordo);
+  text-align: left;
+}
+.tabella thead th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--testo-tenue);
+  background: var(--superficie-2);
+}
+.tabella tbody tr:last-child td {
+  border-bottom: none;
+}
+.tabella .num {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.tabella .nome-prodotto {
+  font-weight: 500;
+}
+.tabella .azioni {
+  white-space: nowrap;
+}
+
+.tabella tr.in-modifica td {
+  background: var(--superficie-2);
+}
+
+.riepilogo {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--superficie);
+  border: 1px solid var(--bordo);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.totale {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--accento);
+}
+.btn-primario {
+  height: 46px;
+  font-weight: 700;
+}
+.btn-primario mat-spinner {
+  display: inline-block;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+@media (max-width: 560px) {
+  .campo-num {
+    width: 100%;
+  }
+  .azioni-form {
+    width: 100%;
+  }
+  .btn-aggiungi {
+    flex: 1;
+  }
+  .tabella th:nth-child(3),
+  .tabella td:nth-child(3) {
+    display: none;
+  }
+}

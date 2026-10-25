@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface OrdineRepository extends JpaRepository<Ordine, Integer> {
 
+    // Ordini di un acquirente, dal piu' recente al piu' vecchio.
     List<Ordine> findByAcquirente_IdOrderByDataOrdineDesc(int idAcquirente);
 }

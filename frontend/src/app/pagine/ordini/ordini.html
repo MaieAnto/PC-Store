@@ -34,9 +34,9 @@
             </mat-expansion-panel-header>
 
             <div class="righe">
-              @for (riga of ordine.dettagli; track riga.id) {
+              @for (riga of ordine.righe; track riga.id) {
                 <div class="riga">
-                  <span class="nome-prodotto">{{ riga.prodotto.nome }}</span>
+                  <span class="nome-prodotto">{{ riga.nome }}</span>
                   <span class="dettaglio-riga">{{ riga.quantita }} × {{ riga.prezzoUnitario.toFixed(2) }} €</span>
                   <span class="subtotale-riga">{{ (riga.prezzoUnitario * riga.quantita).toFixed(2) }} €</span>
                 </div>
